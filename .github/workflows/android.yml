@@ -1,0 +1,47 @@
+name: Compilar Joyous APK
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Obtener proyecto
+        uses: actions/checkout@v4
+      - name: Preparar Node para pruebas
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Comprobar lógica y controles
+        run: |
+          node tests/core.test.cjs
+          node tests/ui.test.cjs
+      - name: Preparar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Instalar Android SDK 35
+        run: |
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -x "$SDKMANAGER" ]; then
+            SDKMANAGER="$ANDROID_HOME/cmdline-tools/16.0/bin/sdkmanager"
+          fi
+          yes | "$SDKMANAGER" --licenses || true
+          "$SDKMANAGER" "platforms;android-35" "build-tools;35.0.0"
+      - name: Preparar Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+      - name: Compilar APK de prueba
+        run: gradle --no-daemon assembleDebug
+      - name: Publicar APK descargable
+        uses: actions/upload-artifact@v4
+        with:
+          name: Joyous-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30
