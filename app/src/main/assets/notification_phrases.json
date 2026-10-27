@@ -1,0 +1,210 @@
+{
+  "es": {
+    "original": [
+      [
+        "¡Ey, buenos días! ¿Empezamos con una tareíta? (´ω｀)",
+        "¡Hoy toca hacer cosas! ¿Por cuál empezamos?",
+        "¡Vamos, que hoy podemos con todo! (ง •̀_•́)ง"
+      ],
+      [
+        "Oye, las tareas siguen ahí (・_・;)",
+        "Creo que se nos está yendo de las manos.",
+        "¿Y si hacemos algo en vez de mirar el techo?"
+      ],
+      [
+        "Oye, oye, que se nos acaba el día (・_・;)",
+        "¡Que no se nos queden las tareas para mañana!",
+        "¡Vamos, último esfuerzo! ¡Todavía llegamos!"
+      ]
+    ],
+    "dark": [
+      [
+        "Tienes cosas pendientes. Qué sorpresa.",
+        "Otro día, otra lista de obligaciones.",
+        "Supongo que hoy harás algo. (¬_¬)"
+      ],
+      [
+        "Siguen sin hacerse. Fascinante.",
+        "Tu productividad es impresionante. En sentido negativo.",
+        "¿Esperas que desaparezcan solas?"
+      ],
+      [
+        "Se acaba el día. Muévete.",
+        "Has tenido todo el día. Todo.",
+        "Última oportunidad. No la desperdicies. (눈_눈)"
+      ]
+    ],
+    "light": [
+      [
+        "¡Buenos días! Tú puedes con esto (´▽｀)",
+        "¡Hoy vamos a conseguir muchas cositas!",
+        "Un pasito pequeño también cuenta."
+      ],
+      [
+        "¡Vamos, un poquito más! (ง'̀-'́)ง",
+        "¡Confío en ti! Todavía tenemos tiempo.",
+        "¿Hacemos una tarea juntitos?"
+      ],
+      [
+        "¡Corre, aún podemos lograrlo! (；ω；)",
+        "¡No te rindas ahora, queda poquito!",
+        "¡Último esfuerzo! ¡Sé que puedes!"
+      ]
+    ],
+    "matrix": [
+      [
+        "[Info] Tareas detectadas.",
+        "Sistema activo. Objetivos pendientes.",
+        "Iniciando protocolo de productividad..."
+      ],
+      [
+        "[Warn] Productividad baja.",
+        "Progreso insuficiente. (._.)",
+        "Error: tareas sin completar."
+      ],
+      [
+        "[Critical] Tiempo agotándose.",
+        "Alerta roja. Ejecutar tareas.",
+        "Último aviso. Sistema decepcionado."
+      ]
+    ],
+    "kumo": [
+      [
+        "¿Una tareíta antes del té? (｡•̀ᴗ-)✧",
+        "¡Hoy podemos hacer cositas bonitas!",
+        "¡Si terminamos pronto, hay pastelito!"
+      ],
+      [
+        "¡Mis orejitas dicen que quedan tareas!",
+        "¡Saltito, tareíta, saltito! (๑˃ᴗ˂)ﻭ",
+        "¡Vamos, vamos! ¡Yo confío en ti!"
+      ],
+      [
+        "¡Uy, ya es tardecito! ¿Terminamos lo que queda? (｡•́‿•̀｡)",
+        "¡Un último saltito y podremos descansar!",
+        "¿Hacemos las últimas tareítas juntitos? ¡Tú puedes!"
+      ]
+    ],
+    "glorp": [
+      [
+        "Criatura detecta tareas :3",
+        "Zip zorp. Hoy toca ser funcional.",
+        "Cerebro vacío. Lista llena."
+      ],
+      [
+        "Goober profesional, ponte a chambear.",
+        "Las tareas se están reproduciendo. Zorp.",
+        "Productividad.exe dejó de funcionar :P"
+      ],
+      [
+        "Haz tus tareas o me como el wifi >:3",
+        "Zip zip. Se acaba el tiempo.",
+        "Haz algo, criatura del pantano."
+      ]
+    ]
+  },
+  "en": {
+    "original": [
+      [
+        "Hey, good morning! Shall we start with a little task? (´ω｀)",
+        "Time to get things done! Where do we start?",
+        "Come on, we’ve got this today! (ง •̀_•́)ง"
+      ],
+      [
+        "Hey, those tasks are still there (・_・;)",
+        "I think this is getting out of hand.",
+        "How about we do something besides stare at the ceiling?"
+      ],
+      [
+        "Hey, hey, we’re running out of day (・_・;)",
+        "Let’s not leave these tasks until tomorrow!",
+        "Come on, one last push! We can still make it!"
+      ]
+    ],
+    "dark": [
+      [
+        "You have things to do. What a surprise.",
+        "Another day, another list of obligations.",
+        "I assume you’ll do something today. (¬_¬)"
+      ],
+      [
+        "Still not done. Fascinating.",
+        "Your productivity is impressive. In all the wrong ways.",
+        "Waiting for them to disappear on their own?"
+      ],
+      [
+        "Day’s almost over. Move.",
+        "You had all day. All day.",
+        "Last chance. Don’t waste it. (눈_눈)"
+      ]
+    ],
+    "light": [
+      [
+        "Good morning! You can do this (´▽｀)",
+        "We’re going to get so many little things done today!",
+        "A tiny step still counts."
+      ],
+      [
+        "Come on, just a little more! (ง'̀-'́)ง",
+        "I believe in you! We still have time.",
+        "Shall we do a task together?"
+      ],
+      [
+        "Quick, we can still do it! (；ω；)",
+        "Don’t give up now, we’re nearly there!",
+        "One last push! I know you can do it!"
+      ]
+    ],
+    "matrix": [
+      [
+        "[Info] Tasks detected.",
+        "System online. Objectives pending.",
+        "Initializing productivity protocol..."
+      ],
+      [
+        "[Warn] Low productivity.",
+        "Insufficient progress. (._.)",
+        "Error: unfinished tasks."
+      ],
+      [
+        "[Critical] Time running out.",
+        "Red alert. Execute tasks.",
+        "Final warning. System disappointed."
+      ]
+    ],
+    "kumo": [
+      [
+        "A little task before tea? (｡•̀ᴗ-)✧",
+        "Let’s do some lovely little things today!",
+        "Finish early and there’s cake!"
+      ],
+      [
+        "My little ears tell me there are tasks left!",
+        "Hop, little task, hop! (๑˃ᴗ˂)ﻭ",
+        "Come on, come on! I believe in you!"
+      ],
+      [
+        "Oh, it’s getting late! Shall we finish what’s left? (｡•́‿•̀｡)",
+        "One last little hop, then we can rest!",
+        "Shall we finish those last little tasks together? You’ve got this!"
+      ]
+    ],
+    "glorp": [
+      [
+        "Creature detects tasks :3",
+        "Zip zorp. Time to be functional.",
+        "Brain empty. Task list full."
+      ],
+      [
+        "Professional goober, get to work.",
+        "The tasks are multiplying. Zorp.",
+        "Productivity.exe has stopped working :P"
+      ],
+      [
+        "Do your tasks or I’m eating the wifi >:3",
+        "Zip zip. Time’s running out.",
+        "Do something, swamp creature."
+      ]
+    ]
+  }
+}

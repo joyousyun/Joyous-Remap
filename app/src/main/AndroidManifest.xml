@@ -1,0 +1,24 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+  <application android:label="Joyous" android:theme="@style/JoyousOriginal" android:usesCleartextTraffic="false" android:allowBackup="true" android:supportsRtl="true" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher">
+    <activity android:name=".MainActivity" android:launchMode="singleTask" android:exported="true" android:windowSoftInputMode="adjustResize">
+    </activity>
+    <activity android:name=".ThemeActivities$Original" android:exported="false" android:theme="@style/JoyousOriginal" android:icon="@mipmap/ic_launcher" android:windowSoftInputMode="adjustResize" android:launchMode="singleTask"/>
+    <activity android:name=".ThemeActivities$Dark" android:exported="false" android:theme="@style/JoyousDark" android:icon="@mipmap/ic_launcher" android:windowSoftInputMode="adjustResize" android:launchMode="singleTask"/>
+    <activity android:name=".ThemeActivities$Light" android:exported="false" android:theme="@style/JoyousLight" android:icon="@mipmap/ic_launcher" android:windowSoftInputMode="adjustResize" android:launchMode="singleTask"/>
+    <activity android:name=".ThemeActivities$Matrix" android:exported="false" android:theme="@style/JoyousMatrix" android:icon="@mipmap/ic_launcher" android:windowSoftInputMode="adjustResize" android:launchMode="singleTask"/>
+    <activity android:name=".ThemeActivities$Kumo" android:exported="false" android:theme="@style/JoyousKumo" android:icon="@mipmap/ic_launcher" android:windowSoftInputMode="adjustResize" android:launchMode="singleTask"/>
+    <activity android:name=".ThemeActivities$Glorp" android:exported="false" android:theme="@style/JoyousGlorp" android:icon="@mipmap/ic_launcher" android:windowSoftInputMode="adjustResize" android:launchMode="singleTask"/>
+    <activity-alias android:name=".LauncherOriginal" android:targetActivity=".ThemeActivities$Original" android:enabled="true" android:exported="true" android:icon="@mipmap/ic_original" android:label="Joyous"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity-alias>
+    <activity-alias android:name=".LauncherDark" android:targetActivity=".ThemeActivities$Dark" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_dark" android:label="Joyous"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity-alias>
+    <activity-alias android:name=".LauncherLight" android:targetActivity=".ThemeActivities$Light" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_light" android:label="Joyous"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity-alias>
+    <activity-alias android:name=".LauncherMatrix" android:targetActivity=".ThemeActivities$Matrix" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_matrix" android:label="Joyous"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity-alias>
+    <activity-alias android:name=".LauncherKumo" android:targetActivity=".ThemeActivities$Kumo" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_kumo" android:label="Joyous"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity-alias>
+    <activity-alias android:name=".LauncherGlorp" android:targetActivity=".ThemeActivities$Glorp" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_glorp" android:label="Joyous"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity-alias>
+    <receiver android:name=".ReminderReceiver" android:exported="false"/>
+    <receiver android:name=".BootReceiver" android:exported="true">
+      <intent-filter><action android:name="android.intent.action.BOOT_COMPLETED"/><action android:name="android.intent.action.TIME_SET"/><action android:name="android.intent.action.TIMEZONE_CHANGED"/><action android:name="android.intent.action.MY_PACKAGE_REPLACED"/></intent-filter>
+    </receiver>
+  </application>
+</manifest>

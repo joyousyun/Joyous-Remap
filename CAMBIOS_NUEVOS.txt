@@ -1,0 +1,212 @@
+Joyous 1.2 · Sin foco automático al abrir editores o crear entradas. Formularios sin validación visual nativa y con comprobación explícita, evitando activar el teclado al intentar guardar o añadir vacío. Vex alterna avisos con tono seco sin repetir «ayudaría».
+
+Joyous 1.2 · Kaomojis y expresiones finales de avisos en línea aparte, sin cortes. Añadir vacío muestra el aviso sin enfocar el campo ni abrir el teclado.
+
+Joyous 1.2 · Recuperados los textos completos de avisos con personalidad. Duración de avisos flotantes reducida de diez a seis segundos. Los avisos de campos en ventanas siguen visibles hasta corregir o cerrar. Incluye corrección de nombres vacíos.
+
+Joyous 1.2 · Editar nombre de tarea o rutina valida vacío y espacios: aviso de mascota dentro de la ventana, sin cerrarla ni modificar el nombre anterior.
+
+Joyous 1.2 · Textos de avisos más cortos, manteniendo personalidad, español/inglés y duración: diez segundos fuera de ventanas; hasta corregir o cerrar dentro.
+
+Joyous 1.2 · Avisos redactados según la personalidad de cada mascota: frases propias para campos vacíos y valores inválidos, en español e inglés, manteniendo el dato y la corrección necesarios.
+
+Joyous 1.2 · En ventanas de edición, la mascota avisa dentro del formulario junto al campo: miniatura, nombre y aviso con el tema. El mensaje permanece hasta corregir el campo o cerrar la ventana; no se queda oculto detrás ni aparece después fuera.
+
+Joyous 1.2 · Avisos de la mascota visualmente diferenciados: etiqueta Aviso/Notice con icono, borde destacado, fondo tintado y contraste según tema. Se retira el estilo al terminar el aviso.
+
+Joyous 1.2 · La mascota avisa de campos incompletos o inválidos sin bocadillos de validación del navegador. Las rutinas sin ejercicios no se abren: la mascota indica Editar para añadirlos, con frase propia por tema e idioma. Avisos visibles diez segundos, incluso si estaba minimizada.
+
+Joyous 1.2 · Hoy, Historial, Agenda y Stats comparten un único sonido fijo, también las pestañas de Fit. Los matices de tema siguen limitados a acciones secundarias y mascotas.
+
+Joyous 1.2 · Un sonido fijo por acción, sin variantes aleatorias. Hoy, Historial, Agenda y Stats tienen firmas distintas y estables entre temas. Historial/Stats se comparten con Fit. Matices del tema solo en acciones secundarias y mascotas.
+
+Joyous 1.2 · 48 motivos sonoros: 3 variantes por acción sin repetición consecutiva. Sonidos de abrir/cerrar, editar, Más, archivar/restaurar, navegación, agua, guardar y tareas, con matices según el tema. Se mantiene un único motor y Sonidos suaves.
+
+Joyous 1.2 · Controles de periodo compartidos en ambos historiales: fuente, tamaños, paleta y flechas. Motor de sonido único: navegación común; sonidos propios de cambio de modo, guardar, agua, deshacer y acciones. Eliminado el sonido de entrar a Fit que sonaba al tocar cualquier botón.
+
+Joyous 1.2 · Eliminado el aro decorativo interior de la mascota minimizada en todos los temas.
+
+Joyous 1.2 · Guía sin «tócame»: «toca de nuevo», también para Glorp. Texto de la burbuja de Nimbi ligeramente más oscuro y legible.
+
+Joyous 1.2 · Sonido ascendente y más alegre al desplegar la mascota, propio de cada personaje y respetando Sonidos suaves. La guía puede repetirse desde Ajustes sin borrar datos.
+
+Joyous 1.2 · Guía inicial en la burbuja de la mascota, con diálogo propio por personaje ES/EN. Acceso de Ajustes con mayor separación. Sonido suave y propio de cada mascota al minimizar, sujeto a Sonidos suaves.
+
+Joyous 1.2 · Tocar el nombre minimiza la mascota; tocar la mascota pequeña la despliega. Sin botón menos. Guía inicial de dos pasos, disponible de nuevo en Ajustes, en español e inglés.
+
+1.21 · Deshacer integrado como acción sin fondo en el encabezado de Agua tomada. Eliminada la indicación del detalle por vaso en el historial Fit.
+
+1.20 · Gestión de tareas en un único desplegable con Activas/Archivadas. Sin acceso duplicado en Historial. Contraste de Continuar corregido en Matrix; Volver sin fondo en todos los temas.
+
+1.19 · Archivados accesibles, volver minimalista, horas por vaso y resumen visual de hidratación en el historial Fit. Los datos antiguos sin hora se conservan sin inventarla.
+
+Actualización visual 1.18
+- Minimizar queda en la esquina superior izquierda de la tarjeta de la mascota, separado del nombre y del contador.
+- Control anclado a la tarjeta, no al conjunto de tarjeta y burbuja de diálogo.
+
+Actualización 1.17 — datos, repetición y controles secundarios
+
+Tareas
+- Una vez: una sola ocasión en el porcentaje y una sola finalización en totales/logros. Sin fecha límite, las pendientes no penalizan la racha diaria repetidamente; el día de finalización sí cuenta como actividad.
+- Al completarse, no reaparece como completada en días futuros.
+- Repetición por días de semana, además de diaria/semanal/personalizada.
+- Las modificaciones se aplican desde hoy mediante versiones del calendario. Los días anteriores conservan su repetición.
+- Archivar oculta la tarea y detiene nuevas ocasiones; conserva marcas e historial. Restaurar reanuda desde ese día.
+- Desplegables de Todas las tareas y Tareas archivadas para gestionar también las que hoy no tocan.
+
+Copias de seguridad
+- Exportación completa: tareas/marcas/versiones/archivo, agenda, rutinas y sesiones, borrador activo, agua y última bebida, preferencias, horarios y estado minimizado.
+- Importación validada antes de escribir. Si falla una escritura, restaura los valores anteriores.
+- Las copias antiguas siguen aceptándose y no borran los apartados que no incluyen.
+- Restablece en memoria cada apartado, sin perder los datos restaurados al continuar usando la app.
+
+Mascota
+- Botón pequeño para minimizar/mostrar. No se añade arrastrar ni mover.
+- Conserva el estado al volver a abrir y al exportar/restaurar la copia.
+
+Fit
+- Archivar/restaurar rutinas sin borrar sus entrenamientos ni estadísticas.
+- Consulta plegable del entrenamiento anterior de esa rutina durante la sesión, sin modificar el borrador actual.
+- Historial de agua con edición/eliminación de vasos y selector de fecha. Corregir el historial no cuenta como beber ahora ni reinicia los 30 minutos de pausa.
+
+Android
+- Horarios y activación de los tres avisos en un desplegable de Ajustes; selector independiente para los avisos de agenda.
+- Se cancelan/reprograman las alarmas al guardar la configuración; se conservan al reiniciar.
+- Los avisos entienden el archivo, los días de semana y las versiones de repetición.
+- Exportación nativa usa la misma copia completa que el HTML. Confirmaciones de importación funcionan en la WebView.
+- Se conservan iconos y pantalla de arranque por tema.
+- La versión web no solicita permisos ni emite notificaciones.
+
+Comprobaciones
+- Pruebas Node de reglas de tareas, archivos/restauración, rollback, agua, estadísticas, logros, ajustes nativos, minimización y consulta anterior.
+- Comprobación de sintaxis JS, IDs del documento, recursos XML y referencias Android.
+- Falta compilar y probar en dispositivo: este entorno no tiene SDK/Gradle de Android. El flujo de GitHub Actions ejecuta las pruebas Node antes de compilar.
+
+Actualización Fit 1.16
+- Al registrar un vaso, la mascota responde inmediatamente con la frase del estado de agua correspondiente.
+- Cuatro estados por mascota e idioma: cero; más de cero y menos del 50%; desde el 50% hasta antes de la meta; meta alcanzada.
+- La respuesta es fija dentro de cada tramo y no se sustituye por una frase aleatoria de entrenamiento al pulsar el vaso.
+- Se conserva la pausa de 30 minutos para recordatorios espontáneos y la rotación general cada minuto.
+- Glorp: «Buen movimiento, criatura.» pasa a «Así se hace.» / «That’s how it’s done.».
+
+Actualización Android 1.15 — icono y arranque por tema
+- Seis iconos con las mascotas reales de la interfaz, obtenidas de su dibujo en píxeles.
+- Paletas: Kumo violeta, Vex azul oscuro, Nimbi claro, Nox negro con detalle rojo, Mimi rosa, Glorp verde.
+- Guardar tema sincroniza el icono del lanzador, colores nativos y tema de arranque.
+- Alias con destinos temáticos y recursos para Android 8–11 y Android 12+.
+- Android 12+ persiste también el tema de splash para aperturas desde notificaciones.
+- Cambio de icono con DONT_KILL_APP; actualización agrupada de componentes en Android 13+.
+- Se reutiliza la actividad abierta al entrar desde otro icono temático para conservar su WebView.
+- La pantalla de carga desaparece tras el primer estado visual del HTML, sin espera artificial.
+- El nombre y el identificador de la app permanecen Joyous / com.joyous.app.
+- El lanzador puede tardar en actualizar su caché o tratar de forma distinta los accesos directos antiguos.
+- El HTML de navegador no cambia el icono del teléfono ni implementa el splash nativo.
+
+Validación pendiente en Android
+Este entorno no dispone de compilador Java/SDK/Gradle ni de dispositivo Android.
+Se revisan recursos XML, referencias, dibujos y sintaxis del JavaScript inyectado.
+Compilar con GitHub Actions y probar: los seis temas; cierre completo y apertura; cambio con la app abierta; reinicio; actualización; apertura desde aviso; conservación de datos.
+
+Actualización mascotas 1.14
+- Nuevas frases Fit: ánimo sencillo y mensajes cortos por personaje, ES/EN.
+- Dos frases de agua por mascota: registro vacío y cantidad parcial bajo la meta (misma frase antes/después de la mitad).
+- Pausa de recordatorios de agua durante 30 minutos tras registrar un vaso; se conserva al recargar.
+- Los recordatorios no aparecen al alcanzar la meta. Se alternan ocasionalmente con ánimo, no cada minuto.
+- Frase nueva cada 60 segundos mientras la app está visible, tanto en normal como en Fit.
+
+Actualización Fit 1.13
+- Mascota Fit sin contador de tareas.
+- Frases de ejercicio y ánimo para las seis mascotas en español e inglés.
+- Mensajes según preparación, entrenamiento en curso o sesión guardada hoy.
+- Recordatorios de agua cuando el registro del día está vacío, alternados con ánimo.
+- La pantalla normal conserva sus frases y contador de tareas.
+
+Actualización visual 1.12
+- Separación de 16 px entre los botones y los detalles desplegados del historial.
+- Matrix: arco de Stats rojo y fechas marcadas con borde rojo discreto.
+- Texto blanco legible en el rango seleccionado (7 días/Mes/Año).
+
+Actualización visual 1.11
+- Corrección del formulario de agenda Kawaii y Claro: fondos, texto, selectores de fecha/hora y desplegables.
+- Paletas de controles y diálogos coherentes para los seis temas.
+- Revisión de formularios de rutinas, sesiones, edición de registros, menús y confirmaciones.
+- Mejora de límites de tamaño, ajuste de botones y desplazamiento en móvil.
+- Icono Android y pantalla inicial siguen fijos; no se incorpora cambio por tema en esta actualización.
+- Verificación estática de estilos, contraste y sintaxis; revisión visual y APK en dispositivo pendientes.
+
+Actualización Matrix 1.10
+- Paleta de negros, carbón y grises oscuros, con rojo limitado a pequeños indicadores.
+- Botones, Stats, logros, calendario y Fit usan superficies neutras.
+- El agua mantiene su barra azul en Matrix, como en el resto de temas.
+
+Actualización visual 1.9
+- Stats normal y Fit comparten componentes: anillo, tarjetas, paneles y logros desplegables.
+- Todos los logros usan el mismo check SVG que las tareas.
+- Cada apartado conserva sus estadísticas; logros normales agrupados en tareas y constancia.
+
+Actualización Fit 1.8
+- Tarjetas recientes: Ver detalles y Más apilados a la derecha. Más contiene Editar/Eliminar.
+- Volumen acumulado con K/M/B y agua acumulada en L/kL/ML/GL.
+- Logros agrupados desplegables: volumen, entrenamientos, días entrenados y días con registro de agua. Cada grupo muestra automáticamente el próximo objetivo y todos los niveles al desplegar.
+
+Actualización Fit 1.7
+- Stats complementa el historial: constancia de 8 semanas, rachas semanales, rutina favorita y media de repeticiones por serie.
+- Ocho logros Fit con progreso calculado desde entrenamientos y días con agua registrados.
+- Agua rediseñada con barra azul en todos los temas, llenado hacia arriba y controles alineados.
+
+Actualización Fit 1.6
+- Agua compacta bajo Mis rutinas, vaso y barra con campos alineados; llenado de abajo hacia arriba.
+- Editar o eliminar entrenamientos guardados desde tarjetas recientes o calendario.
+- Editor de nombre, fecha, ejercicios, series, peso, repeticiones y observaciones.
+- Cancelar no modifica el registro; guardar actualiza historial y estadísticas.
+
+Actualización Fit 1.5
+- Pestaña Stats: entrenamientos, mes actual, días, series, volumen y agua de hoy.
+- Agua en Rutinas: vaso pulsable, ml por vaso, barra vertical, total diario, meta editable y deshacer.
+- Registro por fecha local; el nuevo día empieza en cero sin borrar los anteriores.
+- Valores iniciales: vaso de 250 ml, referencia visual editable de 2000 ml.
+
+Actualización visual 1.4
+- Historial: reloj con flecha; Stats: gráfico de barras.
+- Fit: mancuerna para Rutinas y reloj con flecha para Historial.
+- Agenda se muestra como Calendar en inglés, también en avisos nativos.
+- Se conservan los símbolos de Hoy y Agenda.
+
+Actualización visual 1.3
+- Pestañas Rutinas/Historial directamente bajo la cabecera, sin panel ni título Ejercicio, usando la barra de inicio.
+
+Actualización visual 1.2
+- Título, fecha y ejercicios del historial agrupados con separación de 3 px, sin márgenes de párrafo grandes.
+- Selector Rutinas/Historial usa las mismas clases, fuente y estilos por tema que la navegación de inicio.
+- Mismo HTML en navegador y Android; notificaciones nativas de Android conservadas.
+
+Joyous Android 1.1 — notificaciones exclusivas de Android
+
+- 54 frases originales en español, sin cambios, y 54 traducciones naturales al inglés.
+- Tres alternativas aleatorias por mascota y horario (10:00, 16:00, 21:00).
+- Solo avisa de hábitos si hay tareas pendientes correspondientes al día.
+- Idioma y mascota se consultan al emitir cada aviso.
+- Avisos de agenda a la hora indicada, 1 día o 7 días antes.
+- Las entradas sin hora se notifican a las 10:00, también para avisos previos.
+- Repetición anual; 29 de febrero pasa al 28 en años no bisiestos, como en el HTML.
+- Editar, borrar o importar entradas actualiza las alarmas futuras.
+- Tocar el aviso de agenda abre la agenda.
+- Reprogramación al reiniciar, actualizar y cambiar hora/zona horaria.
+- Ajustes de notificaciones accesibles desde la sección de ajustes de la app.
+- Copia de seguridad nativa conserva también las entradas de agenda.
+- Incluye el HTML corregido proporcionado por el usuario. No añade notificaciones al navegador.
+
+Límites y validación
+- Las alarmas son inexactas: Android puede retrasarlas por ahorro de batería.
+- Es necesario autorizar las notificaciones. Forzar la detención de la app impide los avisos hasta volver a abrirla.
+- Proyecto fuente para compilar con GitHub Actions; este ZIP no es una APK.
+- Comprobadas estructura de frases, sintaxis JS de los scripts HTML e integraciones estáticas.
+- Sin SDK/Gradle ni dispositivo en este entorno: compilación y pruebas reales de Android pendientes.
+
+Comprobación en el móvil
+1. Compilar e instalar la actualización con la misma firma, sin desinstalar la app.
+2. Abrir Joyous y autorizar notificaciones.
+3. Crear una entrada de agenda con aviso dentro de unos minutos y cerrar la app.
+4. Comprobar que llega y abre Agenda; repetir editándola y eliminándola antes del aviso.
+5. Verificar hábitos pendientes/completados y cambio español/inglés en los tres horarios.
+6. Comprobar repetición anual, reinicio del dispositivo y cambio de zona horaria.

@@ -1,0 +1,5 @@
+Joyous 1.2 - Variante Sin_Estrellas
+Se oculta la barra de desplazamiento lateral del HTML.
+Pantalla de carga: solo fondo del tema, sin estrellas ni mascota.
+El icono de la app en el lanzador se mantiene con dos estrellas.
+No se ha compilado ni probado la APK.
