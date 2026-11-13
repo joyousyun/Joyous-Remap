@@ -148,11 +148,28 @@ class MainActivity : Activity() {
                 c.addView(menuCard())
             }
             else -> {
-                c.addView(mono(TextView(this), 12f, grey).apply {
-                    text = getString(R.string.back)
-                    setPadding(0, px(4), px(16), px(8))
+                c.addView(LinearLayout(this).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER_VERTICAL
+                    setPadding(0, px(2), px(16), px(10))
                     setOnClickListener { go(null) }
+                    addView(DotIconView(this@MainActivity, DotIconView.BACK, grey),
+                        LinearLayout.LayoutParams(px(22), px(22)).apply { rightMargin = px(6) })
+                    addView(mono(TextView(this@MainActivity), 12f, grey).apply {
+                        text = getString(R.string.back).removePrefix("‹ ")
+                    })
                 })
+                c.addView(pageHeader(when (page) {
+                    "look" -> DotIconView.LOOK
+                    "panel" -> DotIconView.PANEL
+                    "timing" -> DotIconView.TIMING
+                    else -> DotIconView.MORE
+                }, when (page) {
+                    "look" -> R.string.menu_look
+                    "panel" -> R.string.menu_panel
+                    "timing" -> R.string.menu_timing
+                    else -> R.string.menu_more
+                }))
                 when (page) {
                     "look" -> {
                         c.addView(sectionTitle(R.string.sec_notice)); c.addView(noticeCard())
@@ -188,13 +205,37 @@ class MainActivity : Activity() {
         if (page != null) go(null) else super.onBackPressed()
     }
 
-    private fun menuRow(title: Int, sub: Int, target: String): View {
+    private fun icon(rows: List<String>, size: Int = 36, lit: Int = accent): View =
+        DotIconView(this, rows, lit).apply {
+            layoutParams = LinearLayout.LayoutParams(px(size), px(size)).apply { rightMargin = px(14) }
+        }
+
+    private fun gestureIcon(g: Gesture) = when (g) {
+        Gesture.SINGLE -> DotIconView.SINGLE
+        Gesture.DOUBLE -> DotIconView.DOUBLE
+        Gesture.LONG -> DotIconView.LONG
+        Gesture.TRIPLE -> DotIconView.TRIPLE
+    }
+
+    private fun pageHeader(rows: List<String>, title: Int): View {
+        val h = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(0, px(6), 0, px(6))
+        }
+        h.addView(icon(rows, 40))
+        h.addView(mono(TextView(this), 20f, Color.WHITE, true).apply { text = getString(title).uppercase() })
+        return h
+    }
+
+    private fun menuRow(rows: List<String>, title: Int, sub: Int, target: String): View {
         val row = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
             setPadding(0, px(14), 0, px(14))
             setOnClickListener { go(target) }
         }
+        row.addView(icon(rows))
         val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         col.addView(mono(TextView(this), 14f, Color.WHITE).apply { text = getString(title) })
         col.addView(mono(TextView(this), 10f, grey).apply { text = getString(sub) })
@@ -206,13 +247,13 @@ class MainActivity : Activity() {
     private fun menuCard(): View {
         val box = cardBox()
         (box.layoutParams as LinearLayout.LayoutParams).topMargin = px(20)
-        box.addView(menuRow(R.string.menu_look, R.string.menu_look_sub, "look"))
+        box.addView(menuRow(DotIconView.LOOK, R.string.menu_look, R.string.menu_look_sub, "look"))
         box.addView(divider())
-        box.addView(menuRow(R.string.menu_panel, R.string.menu_panel_sub, "panel"))
+        box.addView(menuRow(DotIconView.PANEL, R.string.menu_panel, R.string.menu_panel_sub, "panel"))
         box.addView(divider())
-        box.addView(menuRow(R.string.menu_timing, R.string.menu_timing_sub, "timing"))
+        box.addView(menuRow(DotIconView.TIMING, R.string.menu_timing, R.string.menu_timing_sub, "timing"))
         box.addView(divider())
-        box.addView(menuRow(R.string.menu_more, R.string.menu_more_sub, "more"))
+        box.addView(menuRow(DotIconView.MORE, R.string.menu_more, R.string.menu_more_sub, "more"))
         return box
     }
 
@@ -300,14 +341,19 @@ class MainActivity : Activity() {
         all.forEachIndexed { i, g ->
             val off = Prefs.action(this, g) == Act.NONE
             val row = LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
                 setPadding(0, px(10), 0, px(10))
                 setOnClickListener { pickAction(g) }
             }
-            row.addView(mono(TextView(this), 10f, grey).apply { text = getString(g.label) })
-            row.addView(mono(TextView(this), 14f, if (off) grey else Color.WHITE).apply {
-                text = describe(g) + "  ›"
+            row.addView(icon(gestureIcon(g), 32, if (off) grey else accent))
+            val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+            col.addView(mono(TextView(this), 10f, grey).apply { text = getString(g.label) })
+            col.addView(mono(TextView(this), 14f, if (off) grey else Color.WHITE).apply {
+                text = describe(g)
             })
+            row.addView(col, LinearLayout.LayoutParams(0, -2, 1f))
+            row.addView(mono(TextView(this), 18f, grey).apply { text = "›" })
             box.addView(row)
             if (i < all.size - 1) box.addView(divider())
         }
