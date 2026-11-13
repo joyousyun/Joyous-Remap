@@ -20,11 +20,12 @@ class DeviceView(ctx: Context) : View(ctx) {
     override fun onDraw(c: Canvas) {
         // Proporción 1 : 2,05, centrada y sin recortes.
         val ar = 2.05f
-        var w = width.toFloat() * 0.84f
+        val cap = height * 0.09f
+        var w = width.toFloat() * 0.70f
         var h = w * ar
-        if (h > height * 0.94f) { h = height * 0.94f; w = h / ar }
+        if (h > (height - cap) * 0.96f) { h = (height - cap) * 0.96f; w = h / ar }
         val x0 = (width - w) / 2f
-        val y0 = (height - h) / 2f
+        val y0 = (height - cap - h) / 2f + 2f
         val u = w / 100f
 
         // Cuerpo
@@ -85,9 +86,17 @@ class DeviceView(ctx: Context) : View(ctx) {
         val cy = y0 + h * y.coerceIn(0, 100) / 100f
         val kx = if (left) x0 + w else x0
         p.style = Paint.Style.FILL
-        p.color = (accent and 0x00FFFFFF) or 0x33000000; c.drawCircle(kx, cy, kh, p)
+        p.color = (accent and 0x00FFFFFF) or 0x33000000; c.drawCircle(kx, cy, kh * 0.62f, p)
         p.color = accent
         r.set(kx - 2.2f * u, cy - kh / 2, kx + 2.2f * u, cy + kh / 2)
         c.drawRoundRect(r, 2.2f * u, 2.2f * u, p)
+
+        // Rótulo
+        p.color = 0xFF8A8A8A.toInt()
+        p.textAlign = Paint.Align.CENTER
+        p.textSize = cap * 0.62f
+        p.typeface = android.graphics.Typeface.MONOSPACE
+        p.letterSpacing = 0.1f
+        c.drawText(context.getString(R.string.dev_back_view), width / 2f, height - cap * 0.28f, p)
     }
 }

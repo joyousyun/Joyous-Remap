@@ -281,39 +281,62 @@ class MainActivity : Activity() {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
         }
-        val imgCol = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER_HORIZONTAL }
-        imgCol.addView(dv, LinearLayout.LayoutParams(px(104), px(200)))
-        imgCol.addView(mono(TextView(this), 8f, grey).apply { text = getString(R.string.dev_back_view) })
-        top.addView(imgCol, LinearLayout.LayoutParams(-2, -2).apply { rightMargin = px(16) })
+        top.addView(dv, LinearLayout.LayoutParams(px(120), px(236)).apply { rightMargin = px(14) })
 
         val info = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        info.addView(mono(TextView(this), 10f, 0xFFD71921.toInt()).apply {
-            text = if (model == null) "" else getString(if (manual != null) R.string.dev_manual else R.string.dev_auto)
-            visibility = if (model == null) View.GONE else View.VISIBLE
+        if (model != null) info.addView(mono(TextView(this), 10f, 0xFFD71921.toInt()).apply {
+            text = getString(if (manual != null) R.string.dev_manual else R.string.dev_auto)
         })
-        info.addView(mono(TextView(this), 17f, Color.WHITE, true).apply {
+        info.addView(mono(TextView(this), 18f, Color.WHITE, true).apply {
             text = model?.title ?: getString(R.string.dev_unknown)
         })
         if (model == null) info.addView(mono(TextView(this), 10f, grey).apply { text = getString(R.string.dev_unknown_sub) })
-        info.addView(pickerRow(R.string.dev_model, manual?.title ?: getString(R.string.dev_auto_opt)) { pickModel() })
-        info.addView(pickerRow(
-            R.string.dev_side,
-            getString(if (Prefs.keyLeft(this)) R.string.dev_left else R.string.dev_right)
-        ) {
-            Prefs.setKeyLeft(this, !Prefs.keyLeft(this)); DeviceProfile.markCustom(this); rebuild()
-        })
+        info.addView(pickerRow(R.string.dev_model, manual?.title ?: getString(R.string.dev_auto_opt)) { pickModel() }
+            .apply { setPadding(0, px(18), 0, px(10)) })
+        info.addView(mono(TextView(this), 10f, grey).apply { text = getString(R.string.dev_side) })
+        info.addView(segmented(
+            listOf(getString(R.string.dev_left), getString(R.string.dev_right)),
+            if (Prefs.keyLeft(this)) 0 else 1
+        ) { i ->
+            Prefs.setKeyLeft(this, i == 0); DeviceProfile.markCustom(this); rebuild()
+        }, LinearLayout.LayoutParams(-1, px(38)).apply { topMargin = px(6) })
+        if (model != null) {
+            info.addView(mono(TextView(this), 10f, 0xFFD71921.toInt(), true).apply {
+                text = "↺  " + getString(R.string.dev_reset)
+                setPadding(0, px(16), 0, px(4))
+                setOnClickListener { DeviceProfile.apply(this@MainActivity, model); rebuild() }
+            })
+        }
         top.addView(info, LinearLayout.LayoutParams(0, -2, 1f))
         box.addView(top)
         box.addView(slider(5, 95, Prefs.keyY(this), { getString(R.string.dev_height, it) }) {
             Prefs.setKeyY(this, it); DeviceProfile.markCustom(this)
             dv.y = it; dv.invalidate()
         })
-        if (model != null) {
-            box.addView(pill(getString(R.string.dev_reset), false) {
-                DeviceProfile.apply(this, model); rebuild()
-            }, LinearLayout.LayoutParams(-1, px(40)).apply { topMargin = px(12) })
-        }
         return box
+    }
+
+    /** Selector de 2+ opciones en cápsula; la elegida va rellena. */
+    private fun segmented(opts: List<String>, sel: Int, onSel: (Int) -> Unit): View {
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            background = GradientDrawable().apply {
+                cornerRadius = px(100).toFloat()
+                setStroke(px(1), 0x88FFFFFF.toInt())
+            }
+            setPadding(px(3), px(3), px(3), px(3))
+        }
+        opts.forEachIndexed { i, t ->
+            row.addView(mono(TextView(this), 10f, if (i == sel) Color.BLACK else Color.WHITE, true).apply {
+                text = t
+                gravity = Gravity.CENTER
+                if (i == sel) background = GradientDrawable().apply {
+                    cornerRadius = px(100).toFloat(); setColor(Color.WHITE)
+                }
+                setOnClickListener { if (i != sel) onSel(i) }
+            }, LinearLayout.LayoutParams(0, -1, 1f))
+        }
+        return row
     }
 
     private fun pickModel() {
