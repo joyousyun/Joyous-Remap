@@ -545,6 +545,8 @@ class MainActivity : Activity() {
                 Toast.makeText(this, R.string.toast_restored, Toast.LENGTH_SHORT).show()
                 rebuild()
             }
+        } catch (ex: org.json.JSONException) {
+            Toast.makeText(this, R.string.toast_bad_file, Toast.LENGTH_LONG).show()
         } catch (ex: Exception) {
             Toast.makeText(this, getString(R.string.toast_error, ex.message ?: ""), Toast.LENGTH_LONG).show()
         }

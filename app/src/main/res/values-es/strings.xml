@@ -161,4 +161,5 @@
     <string name="st_dots">Puntos</string>
     <string name="st_stairs">Escalera</string>
     <string name="st_line">Línea con punto</string>
+    <string name="toast_bad_file">Ese no es un archivo de ajustes. Elige el joyous-remap.json que guardaste.</string>
 </resources>

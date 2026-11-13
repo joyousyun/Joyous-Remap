@@ -161,4 +161,5 @@
     <string name="st_dots">Dots</string>
     <string name="st_stairs">Stairs</string>
     <string name="st_line">Line with knob</string>
+    <string name="toast_bad_file">That is not a settings file. Choose the joyous-remap.json you saved.</string>
 </resources>
