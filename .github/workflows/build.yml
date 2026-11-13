@@ -40,25 +40,13 @@ jobs:
           fi
 
       - name: Build debug APK
-        run: |
-          set -o pipefail
-          gradle assembleDebug --no-daemon 2>&1 | tee "$RUNNER_TEMP/build.log"
-
-      - name: Publish build log to branch build-log
-        if: always()
-        run: |
-          git config user.name "build-bot"
-          git config user.email "bot@users.noreply.github.com"
-          git checkout -q --orphan build-log
-          git rm -rf -q . || true
-          cp "$RUNNER_TEMP/build.log" build.log || echo "no build log" > build.log
-          git add build.log
-          git commit -q -m "build log"
-          git push -q -f origin build-log
+        run: gradle assembleDebug --no-daemon
 
       - name: Publish APK to branch apk
         run: |
           cp app/build/outputs/apk/debug/app-debug.apk "$RUNNER_TEMP/Joyous_remap.apk"
+          git config user.name "build-bot"
+          git config user.email "bot@users.noreply.github.com"
           git checkout -q --orphan apk
           git rm -rf -q . || true
           cp "$RUNNER_TEMP/Joyous_remap.apk" Joyous_remap.apk
