@@ -660,13 +660,8 @@ class TorchPanel(private val ctx: Context) {
                 if (dragging) handler.removeCallbacks(autoHide) else schedule()
             }
         }
-        val off = TextView(ctx).apply {
-            text = ctx.getString(R.string.btn_off).uppercase()
-            setTextColor(Prefs.panelText(ctx))
-            textSize = 11f
-            letterSpacing = 0.06f
-            typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
-            gravity = Gravity.CENTER
+        val off = PowerIconView(ctx, Prefs.panelText(ctx)).apply {
+            contentDescription = ctx.getString(R.string.btn_off_desc)
             background = GradientDrawable().apply {
                 setColor(0xF2101010.toInt())
                 cornerRadius = minOf(Prefs.panelRadius(ctx) * d, offH / 2f)
@@ -767,5 +762,25 @@ class TorchPanel(private val ctx: Context) {
             return
         }
         animateOut(v, curFx, curW) { detach(v) }
+    }
+}
+
+/** Símbolo de apagado (círculo abierto con raya), sin letras. */
+class PowerIconView(ctx: Context, private val col: Int) : View(ctx) {
+    private val p = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        strokeCap = Paint.Cap.ROUND
+    }
+    private val oval = RectF()
+
+    override fun onDraw(c: Canvas) {
+        val s = minOf(width, height) * 0.46f
+        val cx = width / 2f
+        val cy = height / 2f
+        p.color = col
+        p.strokeWidth = s * 0.16f
+        oval.set(cx - s / 2, cy - s / 2, cx + s / 2, cy + s / 2)
+        c.drawArc(oval, -60f, 300f, false, p)
+        c.drawLine(cx, cy - s * 0.62f, cx, cy - s * 0.02f, p)
     }
 }

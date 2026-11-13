@@ -183,4 +183,19 @@
     <string name="adv_show">MÁS OPCIONES ▾</string>
     <string name="adv_hide">MENOS OPCIONES ▴</string>
     <string name="back">‹ ATRÁS</string>
+    <string name="sec_device">DISPOSITIVO</string>
+    <string name="dev_auto">● DETECTADO AUTOMÁTICAMENTE</string>
+    <string name="dev_manual">● ELEGIDO POR TI</string>
+    <string name="dev_unknown">Modelo no reconocido</string>
+    <string name="dev_unknown_sub">Elige el tuyo abajo</string>
+    <string name="dev_model">MODELO</string>
+    <string name="dev_auto_opt">Automático</string>
+    <string name="dev_pick">Elegir modelo</string>
+    <string name="dev_side">LADO DE LA TECLA</string>
+    <string name="dev_left">IZQUIERDO</string>
+    <string name="dev_right">DERECHO</string>
+    <string name="dev_height">ALTURA DE LA TECLA: %1$d%%</string>
+    <string name="dev_reset">RESTAURAR PERFIL</string>
+    <string name="dev_back_view">VISTA TRASERA</string>
+    <string name="btn_off_desc">Apagar la linterna</string>
 </resources>

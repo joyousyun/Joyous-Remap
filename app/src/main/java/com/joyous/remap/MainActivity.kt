@@ -82,6 +82,7 @@ class MainActivity : Activity() {
 
     override fun onResume() {
         super.onResume()
+        DeviceProfile.autoApply(this)
         rebuild()
     }
 
@@ -178,6 +179,9 @@ class MainActivity : Activity() {
                     "panel" -> { c.addView(sectionTitle(R.string.sec_panel)); c.addView(panelCard()) }
                     "timing" -> { c.addView(sectionTitle(R.string.sec_timing)); c.addView(timingCard()) }
                     else -> {
+                        if (BuildConfig.TESTING) {
+                            c.addView(sectionTitle(R.string.sec_device)); c.addView(deviceCard())
+                        }
                         c.addView(sectionTitle(R.string.sec_lang)); c.addView(langCard())
                         c.addView(sectionTitle(R.string.sec_backup)); c.addView(backupCard())
                         c.addView(sectionTitle(R.string.sec_perms)); c.addView(permsCard())
@@ -261,6 +265,66 @@ class MainActivity : Activity() {
         text = getString(if (adv) R.string.adv_hide else R.string.adv_show)
         setPadding(0, px(14), 0, px(6))
         setOnClickListener { adv = !adv; rebuild() }
+    }
+
+    private fun deviceCard(): View {
+        val box = cardBox()
+        val manual = DeviceProfile.manual(this)
+        val model = DeviceProfile.current(this)
+        val dv = DeviceView(this).apply {
+            this.model = model
+            left = Prefs.keyLeft(this@MainActivity)
+            y = Prefs.keyY(this@MainActivity)
+            accent = 0xFFD71921.toInt()
+        }
+        val top = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        val imgCol = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER_HORIZONTAL }
+        imgCol.addView(dv, LinearLayout.LayoutParams(px(104), px(200)))
+        imgCol.addView(mono(TextView(this), 8f, grey).apply { text = getString(R.string.dev_back_view) })
+        top.addView(imgCol, LinearLayout.LayoutParams(-2, -2).apply { rightMargin = px(16) })
+
+        val info = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        info.addView(mono(TextView(this), 10f, 0xFFD71921.toInt()).apply {
+            text = if (model == null) "" else getString(if (manual != null) R.string.dev_manual else R.string.dev_auto)
+            visibility = if (model == null) View.GONE else View.VISIBLE
+        })
+        info.addView(mono(TextView(this), 17f, Color.WHITE, true).apply {
+            text = model?.title ?: getString(R.string.dev_unknown)
+        })
+        if (model == null) info.addView(mono(TextView(this), 10f, grey).apply { text = getString(R.string.dev_unknown_sub) })
+        info.addView(pickerRow(R.string.dev_model, manual?.title ?: getString(R.string.dev_auto_opt)) { pickModel() })
+        info.addView(pickerRow(
+            R.string.dev_side,
+            getString(if (Prefs.keyLeft(this)) R.string.dev_left else R.string.dev_right)
+        ) {
+            Prefs.setKeyLeft(this, !Prefs.keyLeft(this)); DeviceProfile.markCustom(this); rebuild()
+        })
+        top.addView(info, LinearLayout.LayoutParams(0, -2, 1f))
+        box.addView(top)
+        box.addView(slider(5, 95, Prefs.keyY(this), { getString(R.string.dev_height, it) }) {
+            Prefs.setKeyY(this, it); DeviceProfile.markCustom(this)
+            dv.y = it; dv.invalidate()
+        })
+        if (model != null) {
+            box.addView(pill(getString(R.string.dev_reset), false) {
+                DeviceProfile.apply(this, model); rebuild()
+            }, LinearLayout.LayoutParams(-1, px(40)).apply { topMargin = px(12) })
+        }
+        return box
+    }
+
+    private fun pickModel() {
+        val all = NothingModel.values()
+        val names = arrayOf(getString(R.string.dev_auto_opt)) + all.map { it.title }.toTypedArray()
+        darkDialog()
+            .setTitle(R.string.dev_pick)
+            .setItems(names) { _, i ->
+                DeviceProfile.setManual(this, if (i == 0) null else all[i - 1])
+                rebuild()
+            }.show()
     }
 
     private fun noticeCard(): View {
@@ -418,7 +482,7 @@ class MainActivity : Activity() {
         box.addView(divider())
         box.addView(pickerRow(R.string.anim_title, getString(Prefs.anim(this).label)) { pickAnim() })
         box.addView(divider())
-        box.addView(toggle(R.string.key_left, Prefs.keyLeft(this)) { Prefs.setKeyLeft(this, it) })
+        box.addView(toggle(R.string.key_left, Prefs.keyLeft(this)) { Prefs.setKeyLeft(this, it); DeviceProfile.markCustom(this) })
         box.addView(advToggle())
         if (adv) {
             box.addView(colorRow(R.string.edge_color, Prefs.edgeColorRaw(this)) { Prefs.setEdgeColor(this, it) })
@@ -430,7 +494,7 @@ class MainActivity : Activity() {
                 Prefs.setEdgeSoft(this, it)
             })
             box.addView(slider(5, 95, Prefs.keyY(this), { getString(R.string.key_pos, it) }) {
-                Prefs.setKeyY(this, it)
+                Prefs.setKeyY(this, it); DeviceProfile.markCustom(this)
             })
         }
         return box

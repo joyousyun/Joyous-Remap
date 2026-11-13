@@ -69,6 +69,7 @@ class KeyService : AccessibilityService() {
 
     override fun onServiceConnected() {
         super.onServiceConnected()
+        DeviceProfile.autoApply(this)
         overlay = Overlay(this)
         panel = TorchPanel(this)
         cm = getSystemService(CameraManager::class.java)

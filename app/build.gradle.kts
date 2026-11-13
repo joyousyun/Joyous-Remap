@@ -29,6 +29,24 @@ android {
         }
     }
 
+    // Dos variantes: "normal" (la app de siempre) y "testing" (funciones en pruebas, instalable a la vez).
+    flavorDimensions += "channel"
+    productFlavors {
+        create("normal") {
+            dimension = "channel"
+            buildConfigField("boolean", "TESTING", "false")
+        }
+        create("testing") {
+            dimension = "channel"
+            applicationIdSuffix = ".testing"
+            versionNameSuffix = "-testing"
+            buildConfigField("boolean", "TESTING", "true")
+        }
+    }
+    buildFeatures {
+        buildConfig = true
+    }
+
     buildTypes {
         debug {
             signingConfig = signingConfigs.getByName(if (hasKey) "joyous" else "debug")

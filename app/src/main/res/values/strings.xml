@@ -183,4 +183,19 @@
     <string name="adv_show">MORE OPTIONS ▾</string>
     <string name="adv_hide">FEWER OPTIONS ▴</string>
     <string name="back">‹ BACK</string>
+    <string name="sec_device">DEVICE</string>
+    <string name="dev_auto">● AUTO-DETECTED</string>
+    <string name="dev_manual">● CHOSEN BY YOU</string>
+    <string name="dev_unknown">Model not recognized</string>
+    <string name="dev_unknown_sub">Choose yours below</string>
+    <string name="dev_model">MODEL</string>
+    <string name="dev_auto_opt">Automatic</string>
+    <string name="dev_pick">Choose model</string>
+    <string name="dev_side">KEY SIDE</string>
+    <string name="dev_left">LEFT</string>
+    <string name="dev_right">RIGHT</string>
+    <string name="dev_height">KEY HEIGHT: %1$d%%</string>
+    <string name="dev_reset">RESTORE PROFILE</string>
+    <string name="dev_back_view">REAR VIEW</string>
+    <string name="btn_off_desc">Turn off flashlight</string>
 </resources>
