@@ -162,4 +162,25 @@
     <string name="st_stairs">Stairs</string>
     <string name="st_line">Line with knob</string>
     <string name="toast_bad_file">That is not a settings file. Choose the joyous-remap.json you saved.</string>
+    <string name="cfx_pop">POP</string>
+    <string name="cfx_slide">SLIDE DOWN</string>
+    <string name="cfx_fade">FADE</string>
+    <string name="cfx_bounce">BOUNCE</string>
+    <string name="chip_show">SHOW NOTICE</string>
+    <string name="chip_fx">NOTICE ANIMATION</string>
+    <string name="chip_y">NOTICE HEIGHT: %1$d%%</string>
+    <string name="pick_chip_fx">Notice animation</string>
+    <string name="sec_notice">NOTICE</string>
+    <string name="sec_edge">EDGE GLOW</string>
+    <string name="menu_look">Notice &amp; edge</string>
+    <string name="menu_look_sub">What shows when you press</string>
+    <string name="menu_panel">Flashlight</string>
+    <string name="menu_panel_sub">Brightness bar</string>
+    <string name="menu_timing">Timing &amp; camera</string>
+    <string name="menu_timing_sub">Speed of presses</string>
+    <string name="menu_more">More</string>
+    <string name="menu_more_sub">Language, backup, permissions</string>
+    <string name="adv_show">MORE OPTIONS ▾</string>
+    <string name="adv_hide">FEWER OPTIONS ▴</string>
+    <string name="back">‹ BACK</string>
 </resources>

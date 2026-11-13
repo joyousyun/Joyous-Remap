@@ -64,6 +64,17 @@ enum class BarFx(val id: String, val label: Int) {
     }
 }
 
+enum class ChipFx(val id: String, val label: Int) {
+    POP("pop", R.string.cfx_pop),
+    SLIDE("slide", R.string.cfx_slide),
+    FADE("fade", R.string.cfx_fade),
+    BOUNCE("bounce", R.string.cfx_bounce);
+
+    companion object {
+        fun from(id: String?): ChipFx = values().firstOrNull { it.id == id } ?: POP
+    }
+}
+
 enum class Act(val id: String, val label: Int) {
     NONE("none", R.string.act_none),
     APP("app", R.string.act_app),
@@ -248,4 +259,14 @@ object Prefs {
     /** El botón está en el lateral izquierdo (algunos móviles) en lugar del derecho. */
     fun keyLeft(c: Context) = sp(c).getBoolean("key_left", false)
     fun setKeyLeft(c: Context, v: Boolean) = sp(c).edit().putBoolean("key_left", v).apply()
+
+    // Aviso en pantalla (la ventanita)
+    fun chipOn(c: Context) = sp(c).getBoolean("chip_on", true)
+    fun setChipOn(c: Context, v: Boolean) = sp(c).edit().putBoolean("chip_on", v).apply()
+
+    fun chipY(c: Context) = sp(c).getInt("chip_y", 5)
+    fun setChipY(c: Context, v: Int) = sp(c).edit().putInt("chip_y", v).apply()
+
+    fun chipFx(c: Context): ChipFx = ChipFx.from(sp(c).getString("chip_fx", null))
+    fun setChipFx(c: Context, v: ChipFx) = sp(c).edit().putString("chip_fx", v.id).apply()
 }

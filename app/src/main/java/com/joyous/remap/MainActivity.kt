@@ -140,16 +140,109 @@ class MainActivity : Activity() {
             setPadding(px(24), px(2), 0, px(20))
         })
 
-        c.addView(statusCard())
-        c.addView(sectionTitle(R.string.sec_gestures)); c.addView(gesturesCard())
-        c.addView(sectionTitle(R.string.sec_timing)); c.addView(timingCard())
-        c.addView(sectionTitle(R.string.sec_look)); c.addView(lookCard())
-        c.addView(sectionTitle(R.string.sec_panel)); c.addView(panelCard())
-        c.addView(sectionTitle(R.string.sec_lang)); c.addView(langCard())
-        c.addView(sectionTitle(R.string.sec_backup)); c.addView(backupCard())
-        c.addView(sectionTitle(R.string.sec_perms)); c.addView(permsCard())
-        c.addView(sectionTitle(R.string.sec_essential)); c.addView(essentialCard())
+        when (page) {
+            null -> {
+                c.addView(statusCard())
+                c.addView(sectionTitle(R.string.sec_gestures))
+                c.addView(gesturesCard())
+                c.addView(menuCard())
+            }
+            else -> {
+                c.addView(mono(TextView(this), 12f, grey).apply {
+                    text = getString(R.string.back)
+                    setPadding(0, px(4), px(16), px(8))
+                    setOnClickListener { go(null) }
+                })
+                when (page) {
+                    "look" -> {
+                        c.addView(sectionTitle(R.string.sec_notice)); c.addView(noticeCard())
+                        c.addView(sectionTitle(R.string.sec_edge)); c.addView(lookCard())
+                    }
+                    "panel" -> { c.addView(sectionTitle(R.string.sec_panel)); c.addView(panelCard()) }
+                    "timing" -> { c.addView(sectionTitle(R.string.sec_timing)); c.addView(timingCard()) }
+                    else -> {
+                        c.addView(sectionTitle(R.string.sec_lang)); c.addView(langCard())
+                        c.addView(sectionTitle(R.string.sec_backup)); c.addView(backupCard())
+                        c.addView(sectionTitle(R.string.sec_perms)); c.addView(permsCard())
+                        c.addView(sectionTitle(R.string.sec_essential)); c.addView(essentialCard())
+                    }
+                }
+            }
+        }
         return c
+    }
+
+    private var page: String? = null
+    private var adv = false
+
+    private fun go(p: String?) {
+        page = p
+        adv = false
+        scroll?.let { root.removeView(it) }
+        scroll = null
+        rebuild()
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        if (page != null) go(null) else super.onBackPressed()
+    }
+
+    private fun menuRow(title: Int, sub: Int, target: String): View {
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(0, px(14), 0, px(14))
+            setOnClickListener { go(target) }
+        }
+        val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        col.addView(mono(TextView(this), 14f, Color.WHITE).apply { text = getString(title) })
+        col.addView(mono(TextView(this), 10f, grey).apply { text = getString(sub) })
+        row.addView(col, LinearLayout.LayoutParams(0, -2, 1f))
+        row.addView(mono(TextView(this), 18f, grey).apply { text = "›" })
+        return row
+    }
+
+    private fun menuCard(): View {
+        val box = cardBox()
+        (box.layoutParams as LinearLayout.LayoutParams).topMargin = px(20)
+        box.addView(menuRow(R.string.menu_look, R.string.menu_look_sub, "look"))
+        box.addView(divider())
+        box.addView(menuRow(R.string.menu_panel, R.string.menu_panel_sub, "panel"))
+        box.addView(divider())
+        box.addView(menuRow(R.string.menu_timing, R.string.menu_timing_sub, "timing"))
+        box.addView(divider())
+        box.addView(menuRow(R.string.menu_more, R.string.menu_more_sub, "more"))
+        return box
+    }
+
+    private fun advToggle(): View = mono(TextView(this), 11f, accent, true).apply {
+        text = getString(if (adv) R.string.adv_hide else R.string.adv_show)
+        setPadding(0, px(14), 0, px(6))
+        setOnClickListener { adv = !adv; rebuild() }
+    }
+
+    private fun noticeCard(): View {
+        val box = cardBox()
+        box.addView(toggle(R.string.chip_show, Prefs.chipOn(this)) { Prefs.setChipOn(this, it) })
+        if (Prefs.chipOn(this)) {
+            box.addView(divider())
+            box.addView(pickerRow(R.string.chip_fx, getString(Prefs.chipFx(this).label)) { pickChipFx() })
+            box.addView(slider(2, 30, Prefs.chipY(this), { getString(R.string.chip_y, it) }) {
+                Prefs.setChipY(this, it)
+            })
+        }
+        return box
+    }
+
+    private fun pickChipFx() {
+        val all = ChipFx.values()
+        darkDialog()
+            .setTitle(R.string.pick_chip_fx)
+            .setItems(all.map { getString(it.label) }.toTypedArray()) { _, i ->
+                Prefs.setChipFx(this, all[i])
+                rebuild()
+            }.show()
     }
 
     private fun isServiceEnabled(): Boolean {
@@ -160,25 +253,27 @@ class MainActivity : Activity() {
     }
 
     private fun statusCard(): View {
-        val box = cardBox()
         val active = isServiceEnabled()
-        box.addView(mono(TextView(this), 11f, grey).apply { text = getString(R.string.svc_title) })
-        box.addView(mono(TextView(this), 20f, if (active) accent else Color.WHITE, true).apply {
+        val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        box.addView(mono(TextView(this), 12f, if (active) accent else Color.WHITE, true).apply {
             text = getString(if (active) R.string.svc_on else R.string.svc_off)
+            setPadding(px(24), 0, 0, 0)
         })
-        val buttons = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            setPadding(0, px(12), 0, 0)
+        if (!active) {
+            val buttons = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                setPadding(0, px(12), 0, 0)
+            }
+            buttons.addView(pill(getString(R.string.btn_accessibility), true) {
+                startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+            }, LinearLayout.LayoutParams(0, px(44), 1f).apply { rightMargin = px(8) })
+            buttons.addView(pill(getString(R.string.btn_appinfo), false) {
+                startActivity(
+                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$packageName"))
+                )
+            }, LinearLayout.LayoutParams(0, px(44), 1f))
+            box.addView(buttons)
         }
-        buttons.addView(pill(getString(R.string.btn_accessibility), true) {
-            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
-        }, LinearLayout.LayoutParams(0, px(44), 1f).apply { rightMargin = px(8) })
-        buttons.addView(pill(getString(R.string.btn_appinfo), false) {
-            startActivity(
-                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$packageName"))
-            )
-        }, LinearLayout.LayoutParams(0, px(44), 1f))
-        box.addView(buttons)
         return box
     }
 
@@ -274,63 +369,62 @@ class MainActivity : Activity() {
         val box = cardBox()
         box.addView(toggle(R.string.edge_line, Prefs.edge(this)) { Prefs.setEdge(this, it) })
         box.addView(colorRow(R.string.color, Prefs.color(this)) { Prefs.setColor(this, it) })
-        box.addView(colorRow(R.string.edge_color, Prefs.edgeColorRaw(this)) { Prefs.setEdgeColor(this, it) })
-        box.addView(toggle(R.string.rainbow, Prefs.edgeRainbow(this)) { Prefs.setEdgeRainbow(this, it) })
         box.addView(divider())
-        val animRow = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(0, px(10), 0, px(10))
-            setOnClickListener { pickAnim() }
-        }
-        animRow.addView(mono(TextView(this), 10f, grey).apply { text = getString(R.string.anim_title) })
-        animRow.addView(mono(TextView(this), 14f, Color.WHITE).apply {
-            text = getString(Prefs.anim(this@MainActivity).label) + "  ›"
-        })
-        box.addView(animRow)
-        box.addView(slider(1, 10, Prefs.edgeThick(this), { getString(R.string.edge_thick, it) }) {
-            Prefs.setEdgeThick(this, it)
-        })
-        box.addView(slider(0, 24, Prefs.edgeSoft(this), { getString(R.string.edge_soft, it) }) {
-            Prefs.setEdgeSoft(this, it)
-        })
+        box.addView(pickerRow(R.string.anim_title, getString(Prefs.anim(this).label)) { pickAnim() })
+        box.addView(divider())
         box.addView(toggle(R.string.key_left, Prefs.keyLeft(this)) { Prefs.setKeyLeft(this, it) })
-        box.addView(slider(5, 95, Prefs.keyY(this), { getString(R.string.key_pos, it) }) {
-            Prefs.setKeyY(this, it)
-        })
+        box.addView(advToggle())
+        if (adv) {
+            box.addView(colorRow(R.string.edge_color, Prefs.edgeColorRaw(this)) { Prefs.setEdgeColor(this, it) })
+            box.addView(toggle(R.string.rainbow, Prefs.edgeRainbow(this)) { Prefs.setEdgeRainbow(this, it) })
+            box.addView(slider(1, 10, Prefs.edgeThick(this), { getString(R.string.edge_thick, it) }) {
+                Prefs.setEdgeThick(this, it)
+            })
+            box.addView(slider(0, 24, Prefs.edgeSoft(this), { getString(R.string.edge_soft, it) }) {
+                Prefs.setEdgeSoft(this, it)
+            })
+            box.addView(slider(5, 95, Prefs.keyY(this), { getString(R.string.key_pos, it) }) {
+                Prefs.setKeyY(this, it)
+            })
+        }
         return box
     }
 
     private fun panelCard(): View {
         val box = cardBox()
+        val tm = maxOf(2, Prefs.torchMax(this).takeIf { it > 0 } ?: 20)
         box.addView(pickerRow(R.string.panel_style, getString(Prefs.panelStyle(this).label)) { pickStyle() })
         box.addView(divider())
-        box.addView(pickerRow(R.string.panel_shape, getString(Prefs.panelShape(this).label)) { pickShape() })
-        box.addView(divider())
         box.addView(colorRow(R.string.panel_color, Prefs.panelColor(this)) { Prefs.setPanelColor(this, it) })
-        box.addView(colorRow(R.string.panel_border_color, Prefs.panelBorderColor(this)) { Prefs.setPanelBorderColor(this, it) })
-        box.addView(slider(0, 6, Prefs.panelBorder(this), { getString(R.string.panel_border, it) }) {
-            Prefs.setPanelBorder(this, it)
-        })
-        box.addView(colorRow(R.string.panel_text, Prefs.panelText(this)) { Prefs.setPanelText(this, it) })
-        box.addView(slider(2, maxOf(2, Prefs.torchMax(this).takeIf { it > 0 } ?: 20), Prefs.panelSteps(this).coerceAtMost(maxOf(2, Prefs.torchMax(this).takeIf { it > 0 } ?: 20)), { getString(R.string.panel_steps, it) }) {
+        box.addView(slider(2, tm, Prefs.panelSteps(this).coerceAtMost(tm), { getString(R.string.panel_steps, it) }) {
             Prefs.setPanelSteps(this, it)
         })
-        box.addView(divider())
-        box.addView(toggle(R.string.panel_anim, Prefs.panelAnim(this)) { Prefs.setPanelAnim(this, it) })
-        if (Prefs.panelAnim(this)) {
-            box.addView(pickerRow(R.string.panel_bar_fx, getString(Prefs.panelBarFx(this).label)) { pickBarFx() })
-            box.addView(divider())
-        }
-        box.addView(pickerRow(R.string.panel_fx, getString(Prefs.panelFx(this).label)) { pickFx() })
         box.addView(slider(5, 95, Prefs.panelY(this), { getString(R.string.panel_y, it) }) {
             Prefs.setPanelY(this, it)
         })
-        box.addView(slider(0, 40, Prefs.panelRadius(this), { getString(R.string.panel_radius, it) }) {
-            Prefs.setPanelRadius(this, it)
-        })
-        box.addView(slider(60, 150, Prefs.panelSize(this), { getString(R.string.panel_size, it) }) {
-            Prefs.setPanelSize(this, it)
-        })
+        box.addView(advToggle())
+        if (adv) {
+            box.addView(pickerRow(R.string.panel_shape, getString(Prefs.panelShape(this).label)) { pickShape() })
+            box.addView(divider())
+            box.addView(colorRow(R.string.panel_border_color, Prefs.panelBorderColor(this)) { Prefs.setPanelBorderColor(this, it) })
+            box.addView(slider(0, 6, Prefs.panelBorder(this), { getString(R.string.panel_border, it) }) {
+                Prefs.setPanelBorder(this, it)
+            })
+            box.addView(colorRow(R.string.panel_text, Prefs.panelText(this)) { Prefs.setPanelText(this, it) })
+            box.addView(divider())
+            box.addView(toggle(R.string.panel_anim, Prefs.panelAnim(this)) { Prefs.setPanelAnim(this, it) })
+            if (Prefs.panelAnim(this)) {
+                box.addView(pickerRow(R.string.panel_bar_fx, getString(Prefs.panelBarFx(this).label)) { pickBarFx() })
+                box.addView(divider())
+            }
+            box.addView(pickerRow(R.string.panel_fx, getString(Prefs.panelFx(this).label)) { pickFx() })
+            box.addView(slider(0, 40, Prefs.panelRadius(this), { getString(R.string.panel_radius, it) }) {
+                Prefs.setPanelRadius(this, it)
+            })
+            box.addView(slider(60, 150, Prefs.panelSize(this), { getString(R.string.panel_size, it) }) {
+                Prefs.setPanelSize(this, it)
+            })
+        }
         return box
     }
 

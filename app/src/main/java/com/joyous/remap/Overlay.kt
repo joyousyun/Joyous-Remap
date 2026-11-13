@@ -70,6 +70,9 @@ class Overlay(private val ctx: Context) {
             typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
         })
 
+        val showChip = Prefs.chipOn(ctx)
+        if (!showChip && !Prefs.edge(ctx)) return
+        val b = wm.maximumWindowMetrics.bounds
         val root = FrameLayout(ctx)
         var edgeView: EdgeView? = null
         if (Prefs.edge(ctx)) {
@@ -80,14 +83,14 @@ class Overlay(private val ctx: Context) {
             )
             root.addView(edgeView, FrameLayout.LayoutParams(-1, -1))
         }
-        root.addView(
-            chip,
-            FrameLayout.LayoutParams(-2, -2, Gravity.TOP or Gravity.CENTER_HORIZONTAL).apply {
-                topMargin = (44 * d).toInt()
-            }
-        )
-
-        val b = wm.maximumWindowMetrics.bounds
+        if (showChip) {
+            root.addView(
+                chip,
+                FrameLayout.LayoutParams(-2, -2, Gravity.TOP or Gravity.CENTER_HORIZONTAL).apply {
+                    topMargin = (b.height() * Prefs.chipY(ctx) / 100f).toInt()
+                }
+            )
+        }
         val lp = WindowManager.LayoutParams(
             b.width(), b.height(),
             WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
@@ -111,22 +114,36 @@ class Overlay(private val ctx: Context) {
         }
         view = root
         chip.alpha = 0f
+        val fx = Prefs.chipFx(ctx)
+        val bounce = OvershootInterpolator(2.4f)
         anim = ValueAnimator.ofFloat(0f, 1f).apply {
             duration = if (reverse) 700 else 1800 // al apagar, más rápido
             addUpdateListener {
                 val t = it.animatedValue as Float
                 edgeView?.t = t
-                // La ventanita entra y sale con escala, desplazamiento y fundido.
-                val p = when {
-                    t < 0.15f -> t / 0.15f
-                    t > 0.75f -> (1f - t) / 0.25f
-                    else -> 1f
-                }.coerceIn(0f, 1f)
-                val sc = 0.8f + 0.2f * p
-                chip.alpha = p
-                chip.scaleX = sc
-                chip.scaleY = sc
-                chip.translationY = -24 * d * (1f - p)
+                // La ventanita entra y sale con el efecto elegido.
+                val inP = (t / 0.15f).coerceIn(0f, 1f)
+                val outP = ((1f - t) / 0.25f).coerceIn(0f, 1f)
+                val p = minOf(inP, outP)
+                when (fx) {
+                    ChipFx.POP -> {
+                        val sc = 0.8f + 0.2f * p
+                        chip.alpha = p; chip.scaleX = sc; chip.scaleY = sc
+                        chip.translationY = -24 * d * (1f - p)
+                    }
+                    ChipFx.SLIDE -> {
+                        chip.alpha = p; chip.scaleX = 1f; chip.scaleY = 1f
+                        chip.translationY = -70 * d * (1f - p)
+                    }
+                    ChipFx.FADE -> {
+                        chip.alpha = p; chip.scaleX = 1f; chip.scaleY = 1f; chip.translationY = 0f
+                    }
+                    ChipFx.BOUNCE -> {
+                        val e = if (t < 0.75f) bounce.getInterpolation(inP) else outP
+                        val sc = 0.4f + 0.6f * e
+                        chip.alpha = p; chip.scaleX = sc; chip.scaleY = sc; chip.translationY = 0f
+                    }
+                }
             }
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {

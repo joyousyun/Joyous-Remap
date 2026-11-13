@@ -162,4 +162,25 @@
     <string name="st_stairs">Escalera</string>
     <string name="st_line">Línea con punto</string>
     <string name="toast_bad_file">Ese no es un archivo de ajustes. Elige el joyous-remap.json que guardaste.</string>
+    <string name="cfx_pop">APARECER</string>
+    <string name="cfx_slide">DESLIZAR</string>
+    <string name="cfx_fade">DESVANECER</string>
+    <string name="cfx_bounce">REBOTE</string>
+    <string name="chip_show">MOSTRAR AVISO</string>
+    <string name="chip_fx">ANIMACIÓN DEL AVISO</string>
+    <string name="chip_y">ALTURA DEL AVISO: %1$d%%</string>
+    <string name="pick_chip_fx">Animación del aviso</string>
+    <string name="sec_notice">AVISO</string>
+    <string name="sec_edge">BRILLO EN EL BORDE</string>
+    <string name="menu_look">Aviso y borde</string>
+    <string name="menu_look_sub">Lo que se ve al pulsar</string>
+    <string name="menu_panel">Linterna</string>
+    <string name="menu_panel_sub">Barra de brillo</string>
+    <string name="menu_timing">Tiempos y cámara</string>
+    <string name="menu_timing_sub">Velocidad de las pulsaciones</string>
+    <string name="menu_more">Más</string>
+    <string name="menu_more_sub">Idioma, copia, permisos</string>
+    <string name="adv_show">MÁS OPCIONES ▾</string>
+    <string name="adv_hide">MENOS OPCIONES ▴</string>
+    <string name="back">‹ ATRÁS</string>
 </resources>
