@@ -58,6 +58,7 @@ object DeviceProfile {
         sp(c).edit()
             .putBoolean("key_left", m.left)
             .putInt("key_y", m.y)
+            .putInt("panel_y", m.y)
             .putString("model_applied", m.id)
             .putBoolean("key_custom", false)
             .apply()

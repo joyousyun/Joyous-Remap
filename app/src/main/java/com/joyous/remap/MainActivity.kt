@@ -144,22 +144,16 @@ class MainActivity : Activity() {
         when (page) {
             null -> {
                 c.addView(statusCard())
+                if (BuildConfig.TESTING) {
+                    c.addView(deviceCard().apply {
+                        (layoutParams as LinearLayout.LayoutParams).topMargin = px(14)
+                    })
+                }
                 c.addView(sectionTitle(R.string.sec_gestures))
                 c.addView(gesturesCard())
                 c.addView(menuCard())
             }
             else -> {
-                c.addView(LinearLayout(this).apply {
-                    orientation = LinearLayout.HORIZONTAL
-                    gravity = Gravity.CENTER_VERTICAL
-                    setPadding(0, px(2), px(16), px(10))
-                    setOnClickListener { go(null) }
-                    addView(DotIconView(this@MainActivity, DotIconView.BACK, grey),
-                        LinearLayout.LayoutParams(px(22), px(22)).apply { rightMargin = px(6) })
-                    addView(mono(TextView(this@MainActivity), 12f, grey).apply {
-                        text = getString(R.string.back).removePrefix("‹ ")
-                    })
-                })
                 c.addView(pageHeader(when (page) {
                     "look" -> DotIconView.LOOK
                     "panel" -> DotIconView.PANEL
@@ -179,9 +173,6 @@ class MainActivity : Activity() {
                     "panel" -> { c.addView(sectionTitle(R.string.sec_panel)); c.addView(panelCard()) }
                     "timing" -> { c.addView(sectionTitle(R.string.sec_timing)); c.addView(timingCard()) }
                     else -> {
-                        if (BuildConfig.TESTING) {
-                            c.addView(sectionTitle(R.string.sec_device)); c.addView(deviceCard())
-                        }
                         c.addView(sectionTitle(R.string.sec_lang)); c.addView(langCard())
                         c.addView(sectionTitle(R.string.sec_backup)); c.addView(backupCard())
                         c.addView(sectionTitle(R.string.sec_perms)); c.addView(permsCard())
@@ -228,7 +219,19 @@ class MainActivity : Activity() {
             setPadding(0, px(6), 0, px(6))
         }
         h.addView(icon(rows, 40))
-        h.addView(mono(TextView(this), 20f, Color.WHITE, true).apply { text = getString(title).uppercase() })
+        h.addView(mono(TextView(this), 20f, Color.WHITE, true).apply { text = getString(title).uppercase() },
+            LinearLayout.LayoutParams(0, -2, 1f))
+        h.addView(LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(px(10), px(8), 0, px(8))
+            setOnClickListener { go(null) }
+            addView(DotIconView(this@MainActivity, DotIconView.BACK, grey),
+                LinearLayout.LayoutParams(px(20), px(20)).apply { rightMargin = px(4) })
+            addView(mono(TextView(this@MainActivity), 11f, grey).apply {
+                text = getString(R.string.back).removePrefix("‹ ")
+            })
+        })
         return h
     }
 
@@ -310,7 +313,7 @@ class MainActivity : Activity() {
         top.addView(info, LinearLayout.LayoutParams(0, -2, 1f))
         box.addView(top)
         box.addView(slider(5, 95, Prefs.keyY(this), { getString(R.string.dev_height, it) }) {
-            Prefs.setKeyY(this, it); DeviceProfile.markCustom(this)
+            Prefs.setKeyY(this, it); Prefs.setPanelY(this, it); DeviceProfile.markCustom(this)
             dv.y = it; dv.invalidate()
         })
         return box
@@ -517,7 +520,7 @@ class MainActivity : Activity() {
                 Prefs.setEdgeSoft(this, it)
             })
             box.addView(slider(5, 95, Prefs.keyY(this), { getString(R.string.key_pos, it) }) {
-                Prefs.setKeyY(this, it); DeviceProfile.markCustom(this)
+                Prefs.setKeyY(this, it); Prefs.setPanelY(this, it); DeviceProfile.markCustom(this)
             })
         }
         return box
