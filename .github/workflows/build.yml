@@ -42,7 +42,7 @@ jobs:
       - name: Build debug APKs (normal + testing)
         run: |
           set -o pipefail
-          gradle assembleNormalDebug assembleTestingDebug --no-daemon 2>&1 | tee "$RUNNER_TEMP/build.log"
+          gradle assembleNormalDebug assembleLabDebug --no-daemon 2>&1 | tee "$RUNNER_TEMP/build.log"
 
       - name: Publish build errors (only on failure)
         if: failure()
@@ -59,7 +59,7 @@ jobs:
       - name: Publish APK to branch apk
         run: |
           cp app/build/outputs/apk/normal/debug/app-normal-debug.apk "$RUNNER_TEMP/Joyous_remap.apk"
-          cp app/build/outputs/apk/testing/debug/app-testing-debug.apk "$RUNNER_TEMP/Joyous_remap_testing.apk"
+          cp app/build/outputs/apk/lab/debug/app-lab-debug.apk "$RUNNER_TEMP/Joyous_remap_testing.apk"
           git config user.name "build-bot"
           git config user.email "bot@users.noreply.github.com"
           git checkout -q --orphan apk
@@ -75,7 +75,7 @@ jobs:
           name: Joyous-Remap-apk
           path: |
             app/build/outputs/apk/normal/debug/app-normal-debug.apk
-            app/build/outputs/apk/testing/debug/app-testing-debug.apk
+            app/build/outputs/apk/lab/debug/app-lab-debug.apk
 
       - name: Publish release with the APK
         env:

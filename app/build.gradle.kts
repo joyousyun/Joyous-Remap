@@ -36,7 +36,7 @@ android {
             dimension = "channel"
             buildConfigField("boolean", "TESTING", "false")
         }
-        create("testing") {
+        create("lab") {
             dimension = "channel"
             applicationIdSuffix = ".testing"
             versionNameSuffix = "-testing"
