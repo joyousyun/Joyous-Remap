@@ -140,7 +140,7 @@ class DeviceView(ctx: Context) : View(ctx) {
         rrect(c, 0.36f, 0.50f, 0.52f, 0.90f, 0.02f); rrect(c, 0.54f, 0.64f, 0.90f, 0.93f, 0.02f)
         // isla
         fill(if (pro) 0xFF9A9EA4.toInt() else 0xFF0E0F12.toInt()); circle(c, cx, cy, 0.385f)
-        line(if (pro) 0xFF6F737A else 0xFF2A2D33, 0.012f); circle(c, cx, cy, 0.34f)
+        line(if (pro) 0xFF6F737A.toInt() else 0xFF2A2D33.toInt(), 0.012f); circle(c, cx, cy, 0.34f)
         if (!pro) {
             fill(0xFF050505.toInt()); rrect(c, 0.245f, 0.17f, 0.755f, 0.27f, 0.085f)
             line(0xFF3A3D44.toInt(), 0.01f); rrect(c, 0.245f, 0.17f, 0.755f, 0.27f, 0.085f)
@@ -154,7 +154,7 @@ class DeviceView(ctx: Context) : View(ctx) {
             fill(0xFF777B82.toInt()); circle(c, 0.49f, 0.10f, 0.04f)
         }
         // Arcos Glyph
-        arcGlyph(c, cx, cy * h / w * w / h, 0.41f, 199f, 240f)
+        arcGlyph(c, cx, cy, 0.41f, 199f, 240f)
         arcGlyph(c, cx, cy, 0.41f, -15f, 30f)
         arcGlyph(c, cx, cy, 0.41f, 133f, 153f)
         square(c, 0.91f, 0.41f, 0.055f, if (pro) 0xFFE6E6E6.toInt() else 0xFFC0242B.toInt())
