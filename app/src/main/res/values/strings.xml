@@ -45,7 +45,7 @@
     <string name="sec_look">LOOK</string>
     <string name="edge_line">THIN EDGE LINE</string>
     <string name="color">COLOR</string>
-    <string name="key_pos">Key position (height on right edge): %1$d%%</string>
+    <string name="key_pos">Key height on the screen edge: %1$d%%</string>
 
     <string name="sec_perms">PERMISSIONS</string>
     <string name="perm_dnd">DO NOT DISTURB ACCESS</string>
@@ -130,7 +130,7 @@
     <string name="panel_radius">Corners: %1$d dp</string>
     <string name="panel_size">Size: %1$d%%</string>
     <string name="panel_color">PANEL COLOR</string>
-    <string name="panel_y">Panel height (position on the right edge): %1$d%%</string>
+    <string name="panel_y">Panel height: %1$d%%</string>
     <string name="sec_backup">BACKUP</string>
     <string name="btn_export">SAVE SETTINGS</string>
     <string name="btn_import">RESTORE SETTINGS</string>
@@ -157,4 +157,8 @@
     <string name="lang_auto">Automatic (system)</string>
     <string name="lang_en">English</string>
     <string name="lang_es">Español</string>
+    <string name="key_left">KEY ON THE LEFT SIDE</string>
+    <string name="st_dots">Dots</string>
+    <string name="st_stairs">Stairs</string>
+    <string name="st_line">Line with knob</string>
 </resources>

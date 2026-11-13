@@ -45,7 +45,7 @@
     <string name="sec_look">ASPECTO</string>
     <string name="edge_line">LÍNEA FINA EN EL BORDE</string>
     <string name="color">COLOR</string>
-    <string name="key_pos">Posición de la tecla (altura en el lateral derecho): %1$d%%</string>
+    <string name="key_pos">Altura de la tecla en el lateral: %1$d%%</string>
 
     <string name="sec_perms">PERMISOS</string>
     <string name="perm_dnd">ACCESO A NO MOLESTAR</string>
@@ -130,7 +130,7 @@
     <string name="panel_radius">Esquinas: %1$d dp</string>
     <string name="panel_size">Tamaño: %1$d%%</string>
     <string name="panel_color">COLOR DEL PANEL</string>
-    <string name="panel_y">Altura del panel (posición en el lateral derecho): %1$d%%</string>
+    <string name="panel_y">Altura del panel: %1$d%%</string>
     <string name="sec_backup">COPIA DE SEGURIDAD</string>
     <string name="btn_export">GUARDAR CONFIGURACIÓN</string>
     <string name="btn_import">RESTAURAR CONFIGURACIÓN</string>
@@ -157,4 +157,8 @@
     <string name="lang_auto">Automático (sistema)</string>
     <string name="lang_en">English</string>
     <string name="lang_es">Español</string>
+    <string name="key_left">BOTÓN EN EL LATERAL IZQUIERDO</string>
+    <string name="st_dots">Puntos</string>
+    <string name="st_stairs">Escalera</string>
+    <string name="st_line">Línea con punto</string>
 </resources>

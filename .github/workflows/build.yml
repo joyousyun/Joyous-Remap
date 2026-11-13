@@ -40,7 +40,21 @@ jobs:
           fi
 
       - name: Build debug APK
-        run: gradle assembleDebug --no-daemon
+        run: |
+          set -o pipefail
+          gradle assembleDebug --no-daemon 2>&1 | tee "$RUNNER_TEMP/build.log"
+
+      - name: Publish build errors (only on failure)
+        if: failure()
+        run: |
+          git config user.name "build-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git checkout -q --orphan build-log
+          git rm -rf -q . || true
+          cp "$RUNNER_TEMP/build.log" build.log || echo "no build log" > build.log
+          git add build.log
+          git commit -q -m "build errors"
+          git push -q -f origin build-log
 
       - name: Publish APK to branch apk
         run: |

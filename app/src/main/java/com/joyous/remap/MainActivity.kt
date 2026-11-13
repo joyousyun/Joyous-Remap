@@ -293,6 +293,7 @@ class MainActivity : Activity() {
         box.addView(slider(0, 24, Prefs.edgeSoft(this), { getString(R.string.edge_soft, it) }) {
             Prefs.setEdgeSoft(this, it)
         })
+        box.addView(toggle(R.string.key_left, Prefs.keyLeft(this)) { Prefs.setKeyLeft(this, it) })
         box.addView(slider(5, 95, Prefs.keyY(this), { getString(R.string.key_pos, it) }) {
             Prefs.setKeyY(this, it)
         })
@@ -446,55 +447,25 @@ class MainActivity : Activity() {
 
     /** Selector de color libre: tono, saturación y brillo con vista previa. */
     private fun pickCustom(start: Int, onPick: (Int) -> Unit) {
-        val hsv = FloatArray(3)
-        Color.colorToHSV(start, hsv)
         val box = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(px(24), px(16), px(24), px(8))
         }
         val preview = View(this)
-        val seeks = mutableListOf<SeekBar>()
-        fun refresh() {
-            val c = Color.HSVToColor(hsv)
+        fun paintPreview(c: Int) {
             preview.background = GradientDrawable().apply {
                 cornerRadius = px(16).toFloat()
                 setColor(c)
             }
-            for (sb in seeks) {
-                sb.progressTintList = ColorStateList.valueOf(c)
-                sb.thumbTintList = ColorStateList.valueOf(Color.WHITE)
-            }
         }
-        box.addView(preview, LinearLayout.LayoutParams(-1, px(56)))
-        fun add(label: Int, maxV: Int, value: Int, set: (Int) -> Unit) {
-            box.addView(mono(TextView(this), 11f, Color.WHITE).apply {
-                text = getString(label)
-                setPadding(0, px(12), 0, 0)
-            })
-            val sb = SeekBar(this).apply {
-                this.max = maxV
-                progress = value
-                setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                    override fun onProgressChanged(s: SeekBar?, p: Int, fromUser: Boolean) {
-                        set(p)
-                        refresh()
-                    }
-
-                    override fun onStartTrackingTouch(s: SeekBar?) {}
-                    override fun onStopTrackingTouch(s: SeekBar?) {}
-                })
-            }
-            seeks.add(sb)
-            box.addView(sb)
-        }
-        add(R.string.hue, 359, hsv[0].toInt()) { hsv[0] = it.toFloat() }
-        add(R.string.saturation, 100, (hsv[1] * 100).toInt()) { hsv[1] = it / 100f }
-        add(R.string.brightness, 100, (hsv[2] * 100).toInt()) { hsv[2] = it / 100f }
-        refresh()
+        paintPreview(start)
+        val picker = ColorPickerView(this, start) { paintPreview(it) }
+        box.addView(preview, LinearLayout.LayoutParams(-1, px(48)).apply { bottomMargin = px(14) })
+        box.addView(picker, LinearLayout.LayoutParams(-1, -2))
         darkDialog()
             .setTitle(R.string.custom_color)
             .setView(box)
-            .setPositiveButton(android.R.string.ok) { _, _ -> onPick(Color.HSVToColor(hsv)) }
+            .setPositiveButton(android.R.string.ok) { _, _ -> onPick(picker.color) }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
     }

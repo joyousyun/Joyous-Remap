@@ -74,7 +74,7 @@ class Overlay(private val ctx: Context) {
         var edgeView: EdgeView? = null
         if (Prefs.edge(ctx)) {
             edgeView = EdgeView(
-                ctx, Prefs.edgeColor(ctx), Prefs.keyY(ctx) / 100f,
+                ctx, Prefs.edgeColor(ctx), Prefs.keyY(ctx) / 100f, Prefs.keyLeft(ctx),
                 Prefs.edgeThick(ctx).toFloat(), Prefs.edgeSoft(ctx).toFloat(),
                 reverse, Prefs.anim(ctx)
             )
@@ -159,6 +159,7 @@ private class EdgeView(
     c: Context,
     private val edgeColor: Int, // 0 = arcoíris
     private val keyFrac: Float,
+    private val keyLeft: Boolean,
     private val thickDp: Float,
     private val softDp: Float,
     private val reverse: Boolean,
@@ -191,8 +192,8 @@ private class EdgeView(
         measure = m
         len = m.length
         rainbow = SweepGradient(w / 2f, h / 2f, Prefs.RAINBOW, null)
-        // Punto del contorno más cercano a la tecla (lateral derecho).
-        val tx = w.toFloat()
+        // Punto del contorno más cercano a la tecla (lateral de la tecla).
+        val tx = if (keyLeft) 0f else w.toFloat()
         val ty = h * keyFrac
         val pos = FloatArray(2)
         var best = Float.MAX_VALUE
@@ -423,6 +424,10 @@ private class SideSlider(
     private fun seg() = Math.round(fraction * (steps - 1)).coerceIn(0, steps - 1)
 
     private val clip = Path()
+    private val ring2 = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        color = Color.WHITE
+    }
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
         strokeWidth = borderW
@@ -500,6 +505,53 @@ private class SideSlider(
                 canvas.restore()
                 drawBorder(canvas, w, h, r)
             }
+            PanelStyle.DOTS, PanelStyle.STAIRS -> {
+                val r = minOf(radius, w / 2f, h / 2f)
+                rect.set(0f, 0f, w, h)
+                canvas.drawRoundRect(rect, r, r, bgPaint)
+                val pad = borderW + 8 * d
+                val slot = (h - pad * 2) / steps
+                for (i in 0 until steps) {
+                    val cy = h - pad - slot * (i + 0.5f)
+                    if (style == PanelStyle.DOTS) {
+                        val sz = minOf(w - pad * 2, slot * 0.78f)
+                        cell.set(w / 2f - sz / 2f, cy - sz / 2f, w / 2f + sz / 2f, cy + sz / 2f)
+                        drawCell(canvas, i, sz / 2f)
+                    } else {
+                        val bh = slot * 0.62f
+                        val bw = (w - pad * 2) * (0.35f + 0.65f * (i + 1f) / steps)
+                        cell.set(w / 2f - bw / 2f, cy - bh / 2f, w / 2f + bw / 2f, cy + bh / 2f)
+                        drawCell(canvas, i, bh / 2f)
+                    }
+                }
+                drawBorder(canvas, w, h, r)
+            }
+            PanelStyle.LINE -> {
+                val r = minOf(radius, w / 2f, h / 2f)
+                rect.set(0f, 0f, w, h)
+                canvas.drawRoundRect(rect, r, r, bgPaint)
+                val padY = borderW + 16 * d
+                val top = padY
+                val bottom = h - padY
+                val cx = w / 2f
+                val tw = 4 * d
+                val level = if (animOn) shown else fraction
+                val ky = bottom - level * (bottom - top)
+                // marcas por nivel
+                for (i in 0 until steps) {
+                    val ty = bottom - (bottom - top) * i / (steps - 1f)
+                    cell.set(cx - 10 * d, ty - 1 * d, cx + 10 * d, ty + 1 * d)
+                    canvas.drawRoundRect(cell, d, d, if (ty >= ky - 0.5f) onPaint else offPaint)
+                }
+                cell.set(cx - tw / 2f, top, cx + tw / 2f, bottom)
+                canvas.drawRoundRect(cell, tw / 2f, tw / 2f, offPaint)
+                cell.set(cx - tw / 2f, ky, cx + tw / 2f, bottom)
+                canvas.drawRoundRect(cell, tw / 2f, tw / 2f, onPaint)
+                canvas.drawCircle(cx, ky, 11 * d, onPaint)
+                ring2.strokeWidth = 2.5f * d
+                canvas.drawCircle(cx, ky, 11 * d, ring2)
+                drawBorder(canvas, w, h, r)
+            }
             PanelStyle.BARS -> {
                 val r = minOf(radius, w / 2f, h / 2f)
                 rect.set(0f, 0f, w, h)
@@ -557,6 +609,7 @@ class TorchPanel(private val ctx: Context) {
     private var view: View? = null
     private var curFx = PanelFx.SLIDE
     private var curW = 0
+    private var dir = 1f // +1 lateral derecho, -1 lateral izquierdo
     private val autoHide = Runnable { hide() }
 
     fun show(maxLvl: Int, color: Int, onLevel: (Int) -> Unit, onOff: () -> Unit) {
@@ -618,13 +671,14 @@ class TorchPanel(private val ctx: Context) {
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
             PixelFormat.TRANSLUCENT
         ).apply {
-            gravity = Gravity.TOP or Gravity.END
+            gravity = Gravity.TOP or (if (Prefs.keyLeft(ctx)) Gravity.START else Gravity.END)
             x = (14 * d).toInt() // pegado al lateral donde está la tecla
             y = (dm.heightPixels * Prefs.panelY(ctx) / 100f - total / 2f).toInt().coerceIn(lo, hi)
         }
 
         curFx = fx
         curW = w
+        dir = if (Prefs.keyLeft(ctx)) -1f else 1f
         prepare(box, fx, w, total)
         try {
             wm.addView(box, lp)
@@ -638,10 +692,10 @@ class TorchPanel(private val ctx: Context) {
     // ---------- Efectos ----------
 
     private fun prepare(v: View, fx: PanelFx, w: Int, total: Int) {
-        v.pivotX = w.toFloat()
+        v.pivotX = if (dir > 0) w.toFloat() else 0f
         v.pivotY = total / 2f
         when (fx) {
-            PanelFx.SLIDE -> v.translationX = w + 28 * d
+            PanelFx.SLIDE -> v.translationX = dir * (w + 28 * d)
             PanelFx.FADE -> v.alpha = 0f
             PanelFx.POP -> {
                 v.alpha = 0f
@@ -665,7 +719,7 @@ class TorchPanel(private val ctx: Context) {
     private fun animateOut(v: View, fx: PanelFx, w: Int, end: () -> Unit) {
         val a = v.animate().setDuration(190).setInterpolator(AccelerateInterpolator())
         when (fx) {
-            PanelFx.SLIDE -> a.translationX(w + 28 * d)
+            PanelFx.SLIDE -> a.translationX(dir * (w + 28 * d))
             PanelFx.FADE -> a.alpha(0f)
             PanelFx.POP -> a.alpha(0f).scaleX(0.5f).scaleY(0.5f)
             PanelFx.DROP -> a.alpha(0f).translationY(-90 * d)

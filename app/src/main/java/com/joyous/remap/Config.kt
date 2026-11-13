@@ -44,7 +44,10 @@ enum class PanelStyle(val id: String, val label: Int) {
     FRAME("frame", R.string.st_frame),
     PILL("pill", R.string.st_pill),
     SMOOTH("smooth", R.string.st_smooth),
-    BARS("bars", R.string.st_bars);
+    BARS("bars", R.string.st_bars),
+    DOTS("dots", R.string.st_dots),
+    STAIRS("stairs", R.string.st_stairs),
+    LINE("line", R.string.st_line);
 
     companion object {
         fun from(id: String?): PanelStyle = values().firstOrNull { it.id == id } ?: FRAME
@@ -241,4 +244,8 @@ object Prefs {
         val f = if (n > 0) (idx.toFloat() / n).coerceIn(0f, 1f) else 1f
         return 1 + Math.round(f * (maxLvl - 1).coerceAtLeast(0))
     }
+
+    /** El botón está en el lateral izquierdo (algunos móviles) en lugar del derecho. */
+    fun keyLeft(c: Context) = sp(c).getBoolean("key_left", false)
+    fun setKeyLeft(c: Context, v: Boolean) = sp(c).edit().putBoolean("key_left", v).apply()
 }
