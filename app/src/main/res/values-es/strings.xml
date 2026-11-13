@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Joyous Remap</string>
+    <string name="service_description">Detecta la tecla Essential, muestra un aviso en pantalla y ejecuta la acción que elijas. En modo cámara busca el botón de disparo para hacer la foto. No se guarda ni se envía nada de la pantalla.</string>
+    <string name="subtitle">TECLA ESSENTIAL</string>
+
+    <string name="svc_title">SERVICIO DE ACCESIBILIDAD</string>
+    <string name="svc_on">● ACTIVO</string>
+    <string name="svc_off">● INACTIVO</string>
+    <string name="btn_accessibility">ACCESIBILIDAD</string>
+    <string name="btn_appinfo">INFO DE LA APP</string>
+
+    <string name="sec_gestures">PULSACIONES</string>
+    <string name="g_single">UNA PULSACIÓN</string>
+    <string name="g_double">DOBLE PULSACIÓN</string>
+    <string name="g_long">PULSACIÓN LARGA</string>
+    <string name="g_triple">TRIPLE PULSACIÓN (opcional)</string>
+    <string name="pick_action">Elige la acción</string>
+    <string name="pick_app">Elige la app</string>
+
+    <string name="act_none">Desactivada</string>
+    <string name="act_app">Abrir una app…</string>
+    <string name="act_app_named">Abrir: %1$s</string>
+    <string name="act_camera">Cámara: abre y luego hace fotos</string>
+    <string name="act_torch">Linterna con intensidad</string>
+    <string name="act_qr">Escanear QR</string>
+    <string name="act_wallet">Google Wallet</string>
+    <string name="act_recorder">Grabadora</string>
+    <string name="act_sound">Modo sonido (sonido / vibración / silencio)</string>
+    <string name="act_music">Música: reproducir / pausar</string>
+    <string name="act_music_next">Música: siguiente canción</string>
+    <string name="act_rotation">Rotación automática</string>
+    <string name="act_dnd">No molestar</string>
+    <string name="act_screenshot">Captura de pantalla</string>
+    <string name="act_wifi_bt">Wi-Fi y Bluetooth</string>
+    <string name="act_wifi_share">Ajustes Wi-Fi (compartir red)</string>
+    <string name="act_assistant">Asistente (Gemini)</string>
+
+    <string name="sec_timing">TIEMPOS</string>
+    <string name="tap_interval">Intervalo entre pulsaciones: %1$d ms</string>
+    <string name="long_time">Pulsación larga a partir de: %1$d ms</string>
+    <string name="haptic">VIBRACIÓN AL ACTIVAR</string>
+    <string name="shutter_y">Altura del disparador de la cámara (plan B): %1$d%%</string>
+
+    <string name="sec_look">ASPECTO</string>
+    <string name="edge_line">LÍNEA FINA EN EL BORDE</string>
+    <string name="color">COLOR</string>
+    <string name="key_pos">Posición de la tecla (altura en el lateral derecho): %1$d%%</string>
+
+    <string name="sec_perms">PERMISOS</string>
+    <string name="perm_dnd">ACCESO A NO MOLESTAR</string>
+    <string name="perm_write">AJUSTES DEL SISTEMA</string>
+    <string name="perm_grant">CONCEDER</string>
+    <string name="perm_granted">CONCEDIDO</string>
+
+    <string name="sec_essential">ESSENTIAL SPACE</string>
+    <string name="ess_active">● ACTIVO</string>
+    <string name="ess_disabled">○ DESACTIVADO</string>
+    <string name="ess_notfound">○ NO ENCONTRADO</string>
+    <string name="btn_disable_nopc">DESACTIVAR SIN PC</string>
+    <string name="btn_enable_again">ACTIVAR DE NUEVO</string>
+    <string name="toast_install_shizuku">Primero instala Shizuku (se abre su web)</string>
+    <string name="toast_start_shizuku">Abre Shizuku, pulsa Iniciar con Depuración inalámbrica y vuelve aquí</string>
+    <string name="toast_shizuku_denied">Permiso de Shizuku denegado</string>
+    <string name="toast_ess_disabled">Essential Space desactivado</string>
+    <string name="toast_ess_enabled">Essential Space activado</string>
+    <string name="toast_error">Error: %1$s</string>
+
+    <string name="lbl_opening">Abriendo %1$s</string>
+    <string name="lbl_camera_open">Abriendo cámara</string>
+    <string name="lbl_photo">Foto</string>
+    <string name="lbl_no_camera">No encuentro la cámara</string>
+    <string name="lbl_not_found">App no encontrada</string>
+    <string name="lbl_qr">Lector QR</string>
+    <string name="lbl_recorder">Grabadora</string>
+    <string name="lbl_assistant">Asistente</string>
+    <string name="lbl_sound">Sonido</string>
+    <string name="lbl_vibrate">Vibración</string>
+    <string name="lbl_silent">Silencio</string>
+    <string name="lbl_play_pause">Reproducir / pausar</string>
+    <string name="lbl_next">Siguiente canción</string>
+    <string name="lbl_rot_on">Rotación activada</string>
+    <string name="lbl_rot_off">Rotación desactivada</string>
+    <string name="lbl_dnd_on">No molestar activado</string>
+    <string name="lbl_dnd_off">No molestar desactivado</string>
+    <string name="lbl_conn_on">Wi-Fi y Bluetooth activados</string>
+    <string name="lbl_conn_off">Wi-Fi y Bluetooth desactivados</string>
+    <string name="lbl_conn_panel">Panel de conexiones</string>
+    <string name="lbl_wifi_settings">Ajustes Wi-Fi</string>
+    <string name="lbl_need_policy">Concede el acceso a No molestar en la app</string>
+    <string name="lbl_need_write">Concede el acceso a ajustes del sistema en la app</string>
+    <string name="lbl_torch_on">Linterna encendida</string>
+    <string name="lbl_torch_off">Linterna apagada</string>
+    <string name="lbl_no_torch">Este móvil no tiene linterna</string>
+    <string name="lbl_torch_err">No se pudo usar la linterna</string>
+
+    <string name="torch_title">Intensidad de la linterna</string>
+    <string name="torch_title_on">Linterna encendida</string>
+    <string name="btn_off">Apagar</string>
+
+
+    <string name="edge_thick">Grosor del borde: %1$d dp</string>
+    <string name="edge_soft">Difuminado del borde: %1$d dp</string>
+
+    <string name="edge_color">COLOR DEL BORDE</string>
+    <string name="anim_title">ANIMACIÓN</string>
+    <string name="pick_anim">Elige la animación</string>
+    <string name="anim_spread">Expandir desde la tecla</string>
+    <string name="anim_sweep">Barrido</string>
+    <string name="anim_pulse">Pulso</string>
+    <string name="anim_flash">Destello</string>
+
+    <string name="rainbow">BORDE ARCOÍRIS</string>
+    <string name="custom_color">Color personalizado</string>
+    <string name="hue">Tono</string>
+    <string name="saturation">Saturación</string>
+    <string name="brightness">Brillo</string>
+
+    <string name="sec_panel">PANEL DE LA LINTERNA</string>
+    <string name="panel_shape">FORMA</string>
+    <string name="panel_fx">EFECTO AL APARECER</string>
+    <string name="pick_shape">Elige la forma</string>
+    <string name="pick_fx">Elige el efecto</string>
+    <string name="shape_rect">Rectángulo</string>
+    <string name="shape_square">Cuadrado</string>
+    <string name="fx_slide">Deslizar</string>
+    <string name="fx_fade">Fundido</string>
+    <string name="fx_pop">Aparecer con rebote</string>
+    <string name="fx_drop">Caer desde arriba</string>
+    <string name="panel_radius">Esquinas: %1$d dp</string>
+    <string name="panel_size">Tamaño: %1$d%%</string>
+    <string name="panel_color">COLOR DEL PANEL</string>
+    <string name="panel_y">Altura del panel (posición en el lateral derecho): %1$d%%</string>
+    <string name="sec_backup">COPIA DE SEGURIDAD</string>
+    <string name="btn_export">GUARDAR CONFIGURACIÓN</string>
+    <string name="btn_import">RESTAURAR CONFIGURACIÓN</string>
+    <string name="toast_saved">Configuración guardada</string>
+    <string name="toast_restored">Configuración restaurada</string>
+    <string name="panel_text">COLOR DEL TEXTO</string>
+    <string name="panel_steps">Niveles de iluminación: %1$d</string>
+    <string name="panel_style">ESTILO DEL PANEL</string>
+    <string name="pick_style">Elige el estilo</string>
+    <string name="panel_border_color">COLOR DEL BORDE DEL PANEL</string>
+    <string name="panel_border">Borde: %1$d dp</string>
+    <string name="st_frame">Celdas con marco</string>
+    <string name="st_pill">Píldora</string>
+    <string name="st_smooth">Slider fluido</string>
+    <string name="st_bars">Barras finas</string>
+    <string name="panel_anim">ANIMAR LA BARRA</string>
+    <string name="panel_bar_fx">CÓMO SE LLENA Y SE VACÍA</string>
+    <string name="pick_bar_fx">Elige la animación</string>
+    <string name="bf_cascade">Una a una</string>
+    <string name="bf_fade">Fundido</string>
+    <string name="bf_grow">Crecer desde el centro</string>
+    <string name="panel_curve">Detalle en poca luz: %1$.1f</string>
+    <string name="sec_lang">IDIOMA</string>
+    <string name="lang_auto">Automático (sistema)</string>
+    <string name="lang_en">English</string>
+    <string name="lang_es">Español</string>
+</resources>

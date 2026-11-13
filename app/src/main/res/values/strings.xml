@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Joyous Remap</string>
+    <string name="service_description">Detects the Essential key, shows an on-screen notice and runs the action you chose. In camera mode it looks for the shutter button to take the photo. Nothing on screen is stored or sent.</string>
+    <string name="subtitle">ESSENTIAL KEY</string>
+
+    <string name="svc_title">ACCESSIBILITY SERVICE</string>
+    <string name="svc_on">● ACTIVE</string>
+    <string name="svc_off">● INACTIVE</string>
+    <string name="btn_accessibility">ACCESSIBILITY</string>
+    <string name="btn_appinfo">APP INFO</string>
+
+    <string name="sec_gestures">PRESSES</string>
+    <string name="g_single">SINGLE PRESS</string>
+    <string name="g_double">DOUBLE PRESS</string>
+    <string name="g_long">LONG PRESS</string>
+    <string name="g_triple">TRIPLE PRESS (optional)</string>
+    <string name="pick_action">Choose action</string>
+    <string name="pick_app">Choose app</string>
+
+    <string name="act_none">Off</string>
+    <string name="act_app">Open an app…</string>
+    <string name="act_app_named">Open: %1$s</string>
+    <string name="act_camera">Camera: open, then take photos</string>
+    <string name="act_torch">Flashlight with intensity</string>
+    <string name="act_qr">Scan QR</string>
+    <string name="act_wallet">Google Wallet</string>
+    <string name="act_recorder">Voice recorder</string>
+    <string name="act_sound">Sound mode (sound / vibrate / silent)</string>
+    <string name="act_music">Music: play / pause</string>
+    <string name="act_music_next">Music: next song</string>
+    <string name="act_rotation">Auto-rotate on / off</string>
+    <string name="act_dnd">Do not disturb</string>
+    <string name="act_screenshot">Screenshot</string>
+    <string name="act_wifi_bt">Wi-Fi and Bluetooth</string>
+    <string name="act_wifi_share">Wi-Fi settings (share network)</string>
+    <string name="act_assistant">Assistant (Gemini)</string>
+
+    <string name="sec_timing">TIMING</string>
+    <string name="tap_interval">Multi-press window: %1$d ms</string>
+    <string name="long_time">Long press after: %1$d ms</string>
+    <string name="haptic">HAPTIC FEEDBACK</string>
+    <string name="shutter_y">Camera shutter height (fallback): %1$d%%</string>
+
+    <string name="sec_look">LOOK</string>
+    <string name="edge_line">THIN EDGE LINE</string>
+    <string name="color">COLOR</string>
+    <string name="key_pos">Key position (height on right edge): %1$d%%</string>
+
+    <string name="sec_perms">PERMISSIONS</string>
+    <string name="perm_dnd">DO NOT DISTURB ACCESS</string>
+    <string name="perm_write">SYSTEM SETTINGS</string>
+    <string name="perm_grant">GRANT</string>
+    <string name="perm_granted">GRANTED</string>
+
+    <string name="sec_essential">ESSENTIAL SPACE</string>
+    <string name="ess_active">● ACTIVE</string>
+    <string name="ess_disabled">○ DISABLED</string>
+    <string name="ess_notfound">○ NOT FOUND</string>
+    <string name="btn_disable_nopc">DISABLE WITHOUT PC</string>
+    <string name="btn_enable_again">ENABLE AGAIN</string>
+    <string name="toast_install_shizuku">Install Shizuku first (its website opens)</string>
+    <string name="toast_start_shizuku">Open Shizuku, tap Start with Wireless debugging and come back here</string>
+    <string name="toast_shizuku_denied">Shizuku permission denied</string>
+    <string name="toast_ess_disabled">Essential Space disabled</string>
+    <string name="toast_ess_enabled">Essential Space enabled</string>
+    <string name="toast_error">Error: %1$s</string>
+
+    <string name="lbl_opening">Opening %1$s</string>
+    <string name="lbl_camera_open">Opening camera</string>
+    <string name="lbl_photo">Photo</string>
+    <string name="lbl_no_camera">Camera not found</string>
+    <string name="lbl_not_found">App not found</string>
+    <string name="lbl_qr">QR scanner</string>
+    <string name="lbl_recorder">Recorder</string>
+    <string name="lbl_assistant">Assistant</string>
+    <string name="lbl_sound">Sound</string>
+    <string name="lbl_vibrate">Vibrate</string>
+    <string name="lbl_silent">Silent</string>
+    <string name="lbl_play_pause">Play / pause</string>
+    <string name="lbl_next">Next song</string>
+    <string name="lbl_rot_on">Auto-rotate on</string>
+    <string name="lbl_rot_off">Auto-rotate off</string>
+    <string name="lbl_dnd_on">Do not disturb on</string>
+    <string name="lbl_dnd_off">Do not disturb off</string>
+    <string name="lbl_conn_on">Wi-Fi and Bluetooth on</string>
+    <string name="lbl_conn_off">Wi-Fi and Bluetooth off</string>
+    <string name="lbl_conn_panel">Connectivity panel</string>
+    <string name="lbl_wifi_settings">Wi-Fi settings</string>
+    <string name="lbl_need_policy">Grant Do Not Disturb access in the app</string>
+    <string name="lbl_need_write">Grant system settings access in the app</string>
+    <string name="lbl_torch_on">Flashlight on</string>
+    <string name="lbl_torch_off">Flashlight off</string>
+    <string name="lbl_no_torch">No flashlight on this phone</string>
+    <string name="lbl_torch_err">Could not use the flashlight</string>
+
+    <string name="torch_title">Flashlight intensity</string>
+    <string name="torch_title_on">Flashlight on</string>
+    <string name="btn_off">Turn off</string>
+
+
+    <string name="edge_thick">Edge thickness: %1$d dp</string>
+    <string name="edge_soft">Edge glow: %1$d dp</string>
+
+    <string name="edge_color">EDGE COLOR</string>
+    <string name="anim_title">ANIMATION</string>
+    <string name="pick_anim">Choose animation</string>
+    <string name="anim_spread">Spread from the key</string>
+    <string name="anim_sweep">Sweep</string>
+    <string name="anim_pulse">Pulse</string>
+    <string name="anim_flash">Flash</string>
+
+    <string name="rainbow">RAINBOW EDGE</string>
+    <string name="custom_color">Custom color</string>
+    <string name="hue">Hue</string>
+    <string name="saturation">Saturation</string>
+    <string name="brightness">Brightness</string>
+
+    <string name="sec_panel">FLASHLIGHT PANEL</string>
+    <string name="panel_shape">SHAPE</string>
+    <string name="panel_fx">APPEAR EFFECT</string>
+    <string name="pick_shape">Choose shape</string>
+    <string name="pick_fx">Choose effect</string>
+    <string name="shape_rect">Rectangle</string>
+    <string name="shape_square">Square</string>
+    <string name="fx_slide">Slide in</string>
+    <string name="fx_fade">Fade</string>
+    <string name="fx_pop">Pop</string>
+    <string name="fx_drop">Drop from top</string>
+    <string name="panel_radius">Corners: %1$d dp</string>
+    <string name="panel_size">Size: %1$d%%</string>
+    <string name="panel_color">PANEL COLOR</string>
+    <string name="panel_y">Panel height (position on the right edge): %1$d%%</string>
+    <string name="sec_backup">BACKUP</string>
+    <string name="btn_export">SAVE SETTINGS</string>
+    <string name="btn_import">RESTORE SETTINGS</string>
+    <string name="toast_saved">Settings saved</string>
+    <string name="toast_restored">Settings restored</string>
+    <string name="panel_text">TEXT COLOR</string>
+    <string name="panel_steps">Brightness levels: %1$d</string>
+    <string name="panel_style">PANEL STYLE</string>
+    <string name="pick_style">Choose style</string>
+    <string name="panel_border_color">BORDER COLOR</string>
+    <string name="panel_border">Border: %1$d dp</string>
+    <string name="st_frame">Cells in a frame</string>
+    <string name="st_pill">Pill</string>
+    <string name="st_smooth">Smooth slider</string>
+    <string name="st_bars">Thin bars</string>
+    <string name="panel_anim">ANIMATE THE BAR</string>
+    <string name="panel_bar_fx">HOW IT FILLS AND EMPTIES</string>
+    <string name="pick_bar_fx">Choose animation</string>
+    <string name="bf_cascade">One by one</string>
+    <string name="bf_fade">Fade</string>
+    <string name="bf_grow">Grow from the center</string>
+    <string name="panel_curve">Low-light detail: %1$.1f</string>
+    <string name="sec_lang">LANGUAGE</string>
+    <string name="lang_auto">Automatic (system)</string>
+    <string name="lang_en">English</string>
+    <string name="lang_es">Español</string>
+</resources>
