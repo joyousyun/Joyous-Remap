@@ -29,20 +29,7 @@ android {
         }
     }
 
-    // Dos variantes: "normal" (la app de siempre) y "testing" (funciones en pruebas, instalable a la vez).
-    flavorDimensions += "channel"
-    productFlavors {
-        create("normal") {
-            dimension = "channel"
-            buildConfigField("boolean", "TESTING", "false")
-        }
-        create("lab") {
-            dimension = "channel"
-            applicationIdSuffix = ".testing"
-            versionNameSuffix = "-testing"
-            buildConfigField("boolean", "TESTING", "true")
-        }
-    }
+    defaultConfig.buildConfigField("boolean", "TESTING", "true") // detección de modelo activa
     buildFeatures {
         buildConfig = true
     }
