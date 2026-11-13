@@ -85,15 +85,9 @@ class DeviceView(ctx: Context) : View(ctx) {
         y0 = (height - cap - h) / 2f + 2f
 
         val m = model
-        val body: Int; val edge: Int; val dim: Int
-        when (m) {
-            NothingModel.P3A_PRO -> { body = 0xFF8C9096.toInt(); edge = 0xFFC4C7CB.toInt(); dim = 0xFF777B82.toInt() }
-            NothingModel.P3A_LITE -> { body = 0xFFEEEEEE.toInt(); edge = 0xFFFFFFFF.toInt(); dim = 0xFFD2D2D2.toInt() }
-            NothingModel.P4A -> { body = 0xFF121821.toInt(); edge = 0xFF4A5566.toInt(); dim = 0xFF1E2632.toInt() }
-            NothingModel.P4A_PRO -> { body = 0xFF17191D.toInt(); edge = 0xFF555A63.toInt(); dim = 0xFF22252B.toInt() }
-            else -> { body = 0xFF141519.toInt(); edge = 0xFF50555E.toInt(); dim = 0xFF262A30.toInt() }
-        }
-        val lite = m == NothingModel.P3A_LITE
+        // Todos los modelos con el mismo estilo oscuro para integrarse con la app.
+        val body = 0xFF141519.toInt(); val edge = 0xFF50555E.toInt(); val dim = 0xFF262A30.toInt()
+        val lite = false
 
         fill(body); rrect(c, 0f, 0f, 1f, 1f, 0.14f)
 
@@ -139,8 +133,8 @@ class DeviceView(ctx: Context) : View(ctx) {
         fill(dim); circle(c, 0.14f, 0.47f, 0.07f)
         rrect(c, 0.36f, 0.50f, 0.52f, 0.90f, 0.02f); rrect(c, 0.54f, 0.64f, 0.90f, 0.93f, 0.02f)
         // isla
-        fill(if (pro) 0xFF9A9EA4.toInt() else 0xFF0E0F12.toInt()); circle(c, cx, cy, 0.385f)
-        line(if (pro) 0xFF6F737A.toInt() else 0xFF2A2D33.toInt(), 0.012f); circle(c, cx, cy, 0.34f)
+        fill(0xFF0E0F12.toInt()); circle(c, cx, cy, 0.385f)
+        line(0xFF2A2D33.toInt(), 0.012f); circle(c, cx, cy, 0.34f)
         if (!pro) {
             fill(0xFF050505.toInt()); rrect(c, 0.245f, 0.17f, 0.755f, 0.27f, 0.085f)
             line(0xFF3A3D44.toInt(), 0.01f); rrect(c, 0.245f, 0.17f, 0.755f, 0.27f, 0.085f)
@@ -149,9 +143,9 @@ class DeviceView(ctx: Context) : View(ctx) {
             fill(0xFFE8E8E8.toInt()); circle(c, 0.42f, 0.105f, 0.026f)
         } else {
             lens(c, 0.327f, 0.139f, 0.062f, 0xFF1A1A1A.toInt()); lens(c, 0.327f, 0.225f, 0.062f, 0xFF1A1A1A.toInt())
-            fill(0xFFB9BDC2.toInt()); rrect(c, 0.46f, 0.17f, 0.81f, 0.285f, 0.05f)
+            fill(0xFF2A2D33.toInt()); rrect(c, 0.46f, 0.17f, 0.81f, 0.285f, 0.05f)
             fill(0xFF050505.toInt()); rrect(c, 0.50f, 0.185f, 0.60f, 0.265f, 0.04f)
-            fill(0xFF777B82.toInt()); circle(c, 0.49f, 0.10f, 0.04f)
+            fill(0xFF3A3D44.toInt()); circle(c, 0.49f, 0.10f, 0.04f)
         }
         // Arcos Glyph
         arcGlyph(c, cx, cy, 0.41f, 199f, 240f)
@@ -162,9 +156,9 @@ class DeviceView(ctx: Context) : View(ctx) {
 
     /** Phone (3a) Lite: tres lentes sueltas, cuadrado rojo y un único LED. */
     private fun drawLite(c: Canvas, dim: Int) {
-        line(0xFFC9C9C9.toInt(), 0.012f); rrect(c, 0.27f, 0.165f, 0.955f, 0.84f, 0.07f)
-        line(0xFFD8D8D8.toInt(), 0.01f); rrect(c, 0.33f, 0.178f, 0.77f, 0.20f, 0.01f)
-        fill(0xFF2A2A2A.toInt())
+        line(0xFF3A3E45.toInt(), 0.012f); rrect(c, 0.27f, 0.165f, 0.955f, 0.84f, 0.07f)
+        line(0xFF3A3E45.toInt(), 0.01f); rrect(c, 0.33f, 0.178f, 0.77f, 0.20f, 0.01f)
+        fill(0xFF50555E.toInt())
         listOf(0.82f to 0.07f, 0.9f to 0.05f, 0.55f to 0.46f, 0.55f to 0.92f, 0.9f to 0.92f).forEach { circle(c, it.first, it.second, 0.012f) }
         lens(c, 0.135f, 0.058f, 0.08f, 0xFF1A1A1A.toInt())
         lens(c, 0.347f, 0.096f, 0.07f, 0xFF1A1A1A.toInt())
