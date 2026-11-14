@@ -99,6 +99,8 @@ class QuickMenu(private val ctx: Context, private val onPick: (Act, String?) -> 
         val card = LinearLayout(ctx).apply {
             orientation = LinearLayout.VERTICAL
             isClickable = true // los huecos entre accesos no cierran el menú
+            clipChildren = false // el elegido crece y los accesos entran desplazados: sin recortes
+            clipToPadding = false
             if (!asBar) {
                 setPadding((6 * d).toInt(), (6 * d).toInt(), (6 * d).toInt(), (6 * d).toInt())
                 background = GradientDrawable().apply {
@@ -166,7 +168,10 @@ class QuickMenu(private val ctx: Context, private val onPick: (Act, String?) -> 
             })
         }
 
-        val rootView = FrameLayout(ctx).apply { setOnClickListener { hide() } }
+        val rootView = FrameLayout(ctx).apply {
+            clipChildren = false
+            setOnClickListener { hide() }
+        }
         val side = (14 * d).toInt()
         val lo = (40 * d).toInt()
         // La altura se calcula antes de mostrarlo, con el tamaño real de la pantalla y del menú.
