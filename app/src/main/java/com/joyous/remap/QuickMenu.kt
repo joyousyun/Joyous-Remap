@@ -101,7 +101,10 @@ class QuickMenu(private val ctx: Context, private val onPick: (Act, String?) -> 
             isClickable = true // los huecos entre accesos no cierran el menú
             clipChildren = false // el elegido crece y los accesos entran desplazados: sin recortes
             clipToPadding = false
-            if (!asBar) {
+            if (asBar) {
+                // Margen interior para que el elegido pueda crecer y los accesos entrar sin que nada se recorte.
+                setPadding((12 * d).toInt(), (6 * d).toInt(), (12 * d).toInt(), (6 * d).toInt())
+            } else {
                 setPadding((6 * d).toInt(), (6 * d).toInt(), (6 * d).toInt(), (6 * d).toInt())
                 background = GradientDrawable().apply {
                     setColor(0xF2101010.toInt())
@@ -172,7 +175,7 @@ class QuickMenu(private val ctx: Context, private val onPick: (Act, String?) -> 
             clipChildren = false
             setOnClickListener { hide() }
         }
-        val side = (14 * d).toInt()
+        val side = ((if (asBar) 2 else 14) * d).toInt() // en barra, 12 dp más van de relleno interior
         val lo = (40 * d).toInt()
         // La altura se calcula antes de mostrarlo, con el tamaño real de la pantalla y del menú.
         val bounds = wm.currentWindowMetrics.bounds
@@ -231,7 +234,7 @@ class QuickMenu(private val ctx: Context, private val onPick: (Act, String?) -> 
                     .start()
                 cells.forEachIndexed { i, c ->
                     c.alpha = 0f
-                    c.translationX = dir * 22 * d
+                    c.translationX = dir * 10 * d
                     c.animate().alpha(1f).translationX(0f).setStartDelay(50L + i * 40L)
                         .setDuration(240).setInterpolator(DecelerateInterpolator()).start()
                 }
@@ -261,8 +264,11 @@ class QuickMenu(private val ctx: Context, private val onPick: (Act, String?) -> 
         handler.removeCallbacks(autoHide)
         if (asBar) bg.setStroke((2 * d).toInt(), accent) else bg.setColor((accent and 0x00FFFFFF) or 0x44000000)
         cells.forEachIndexed { j, c ->
-            if (j == i) c.animate().scaleX(1.08f).scaleY(1.08f).setDuration(110)
-                .setInterpolator(OvershootInterpolator(2f)).start()
+            if (j == i) {
+                // Solo la barra crece (tiene margen); el panel se marca con el fondo.
+                if (asBar) c.animate().scaleX(1.05f).scaleY(1.05f).setDuration(110)
+                    .setInterpolator(OvershootInterpolator(2f)).start()
+            }
             else c.animate().alpha(0.25f).setDuration(110).start()
         }
         handler.postDelayed({ animateOut { onPick(pa.act, pa.pkg) } }, 140)
