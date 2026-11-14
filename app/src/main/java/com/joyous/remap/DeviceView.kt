@@ -252,6 +252,7 @@ class DeviceView(ctx: Context) : View(ctx) {
         square(c, 0.86f, 0.235f, 0.047f, RED)
         fill(0xFF2A2D33.toInt()); rrect(c, 0.60f, 0.282f, 0.80f, 0.302f, 0.01f)
         line(0xFF2A2D33.toInt(), 0.012f); circleS(c, 0.134f, 0.935f, 0.082f)
+        label(c, 0.143f, 0.80f, 0xFF6E727A.toInt())
     }
 
     /** CMF Phone 2 Pro: dos lentes grandes con aro metálico, módulo plateado con flash y panel inferior con el dial rojo. */
