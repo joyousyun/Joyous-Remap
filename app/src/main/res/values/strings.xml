@@ -278,4 +278,34 @@
     <string name="q_wifi_bt">Wi-Fi + Bluetooth</string>
     <string name="q_wifi_share">Share Wi-Fi</string>
     <string name="q_assistant">Assistant</string>
+
+    <string name="menu_media">Screen-off music</string>
+    <string name="menu_media_sub">Control playback with the screen off</string>
+    <string name="sec_media">SCREEN-OFF MEDIA CONTROLS</string>
+    <string name="sec_media_status">STATUS</string>
+    <string name="media_toggle">Media controls with screen off</string>
+    <string name="media_desc">Only when the screen is off and a music session is active. With the screen on, your normal presses and profiles always apply.</string>
+    <string name="media_perm">Notification access</string>
+    <string name="media_perm_hint">Android requires it to find the playing media session. Joyous Remap does not read your notifications. If the switch is blocked: App info › ⋮ › Allow restricted settings.</string>
+    <string name="media_session">SESSION NOW</string>
+    <string name="media_session_none">None (nothing playing)</string>
+    <string name="media_session_val">%1$s · %2$s</string>
+    <string name="media_playing">playing</string>
+    <string name="media_paused">paused</string>
+    <string name="media_detect">SCREEN-OFF KEY DETECTION</string>
+    <string name="media_detect_ok">✓ The key reached Joyous Remap with the screen off (%1$s).</string>
+    <string name="media_detect_no">Not detected yet. Turn the screen off, press the key a few times, turn it on and come back. If it stays like this, Android or Nothing do not deliver the key with the screen off and this feature cannot work on this phone.</string>
+    <string name="media_detect_reset">RESET TEST</string>
+    <string name="pick_media">Choose media action</string>
+    <string name="ma_none">Off</string>
+    <string name="ma_play_pause">Play / pause</string>
+    <string name="ma_play">Play</string>
+    <string name="ma_pause">Pause</string>
+    <string name="ma_next">Next song</string>
+    <string name="ma_prev">Previous song</string>
+    <string name="ma_stop">Stop</string>
+    <string name="ma_forward">Fast-forward</string>
+    <string name="ma_rewind">Rewind</string>
+    <string name="ma_vol_up">Volume up</string>
+    <string name="ma_vol_down">Volume down</string>
 </resources>

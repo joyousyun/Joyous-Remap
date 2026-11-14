@@ -269,6 +269,24 @@ object Prefs {
     fun chipY(c: Context) = sp(c).getInt("chip_y", 5)
     fun setChipY(c: Context, v: Int) = sp(c).edit().putInt("chip_y", v).apply()
 
+    // Controles multimedia con la pantalla apagada
+    fun mediaOff(c: Context) = sp(c).getBoolean("media_off", false)
+    fun setMediaOff(c: Context, v: Boolean) = sp(c).edit().putBoolean("media_off", v).apply()
+
+    fun mediaAct(c: Context, g: Gesture): MediaAct {
+        val s = sp(c).getString("mact_${g.key}", null)
+        if (s != null) return MediaAct.from(s)
+        return when (g) {
+            Gesture.SINGLE -> MediaAct.PLAY_PAUSE
+            Gesture.DOUBLE -> MediaAct.NEXT
+            Gesture.TRIPLE -> MediaAct.PREV
+            Gesture.LONG -> MediaAct.NONE
+        }
+    }
+
+    fun setMediaAct(c: Context, g: Gesture, a: MediaAct) =
+        sp(c).edit().putString("mact_${g.key}", a.id).apply()
+
     // Menú rápido (apariencia común; los accesos pueden ser propios de cada perfil)
     fun quickStyle(c: Context) = sp(c).getString("quick_style", "bar") ?: "bar"
     fun setQuickStyle(c: Context, v: String) = sp(c).edit().putString("quick_style", v).apply()

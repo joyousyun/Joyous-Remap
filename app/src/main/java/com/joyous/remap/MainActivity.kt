@@ -158,18 +158,24 @@ class MainActivity : Activity() {
             else -> if (page!!.startsWith("prof:") || page == "excl") buildProfilePage(c) else {
                 c.addView(pageHeader(when (page) {
                     "quick" -> DotIconView.QUICK
+                    "media" -> DotIconView.forAct(Act.MUSIC)
                     "look" -> DotIconView.LOOK
                     "panel" -> DotIconView.PANEL
                     "timing" -> DotIconView.TIMING
                     else -> DotIconView.MORE
                 }, when (page) {
                     "quick" -> R.string.menu_quick
+                    "media" -> R.string.menu_media
                     "look" -> R.string.menu_look
                     "panel" -> R.string.menu_panel
                     "timing" -> R.string.menu_timing
                     else -> R.string.menu_more
                 }))
                 when (page) {
+                    "media" -> {
+                        c.addView(sectionTitle(R.string.sec_media)); c.addView(mediaCard())
+                        c.addView(sectionTitle(R.string.sec_media_status)); c.addView(mediaStatusCard())
+                    }
                     "quick" -> {
                         c.addView(sectionTitle(R.string.sec_quick_items)); c.addView(quickItemsCard())
                         c.addView(sectionTitle(R.string.sec_quick_look)); c.addView(quickLookCard())
@@ -265,6 +271,8 @@ class MainActivity : Activity() {
         val box = cardBox()
         (box.layoutParams as LinearLayout.LayoutParams).topMargin = px(20)
         box.addView(menuRow(DotIconView.QUICK, R.string.menu_quick, R.string.menu_quick_sub, "quick"))
+        box.addView(divider())
+        box.addView(menuRow(DotIconView.forAct(Act.MUSIC), R.string.menu_media, R.string.menu_media_sub, "media"))
         box.addView(divider())
         box.addView(menuRow(DotIconView.LOOK, R.string.menu_look, R.string.menu_look_sub, "look"))
         box.addView(divider())
@@ -928,6 +936,100 @@ class MainActivity : Activity() {
                 rebuild()
             }
         }.start()
+    }
+
+    // ---------- Controles multimedia con pantalla apagada ----------
+
+    private fun mediaCard(): View {
+        val box = cardBox()
+        box.addView(mono(TextView(this), 10f, grey).apply {
+            text = getString(R.string.media_desc)
+            setPadding(0, px(4), 0, px(6))
+        })
+        box.addView(toggle(R.string.media_toggle, Prefs.mediaOff(this)) { Prefs.setMediaOff(this, it) })
+        if (Prefs.mediaOff(this)) {
+            box.addView(divider())
+            val all = Gesture.values()
+            all.forEachIndexed { i, g ->
+                val m = Prefs.mediaAct(this, g)
+                val row = LinearLayout(this).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER_VERTICAL
+                    setPadding(0, px(10), 0, px(10))
+                    setOnClickListener { pickMediaAct(g) }
+                }
+                row.addView(icon(gestureIcon(g), 32, if (m == MediaAct.NONE) grey else accent))
+                val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+                col.addView(mono(TextView(this), 10f, grey).apply { text = getString(g.label) })
+                col.addView(mono(TextView(this), 14f, if (m == MediaAct.NONE) grey else Color.WHITE).apply {
+                    text = getString(m.label)
+                })
+                row.addView(col, lp(0, -2, 1f))
+                row.addView(mono(TextView(this), 18f, grey).apply { text = "›" })
+                box.addView(row)
+                if (i < all.size - 1) box.addView(divider())
+            }
+        }
+        return box
+    }
+
+    private fun pickMediaAct(g: Gesture) {
+        val all = MediaAct.values()
+        darkDialog()
+            .setTitle(R.string.pick_media)
+            .setItems(all.map { getString(it.label) }.toTypedArray()) { _, i ->
+                Prefs.setMediaAct(this, g, all[i]); rebuild()
+            }.show()
+    }
+
+    private fun mediaStatusCard(): View {
+        val box = cardBox()
+        // Acceso a notificaciones: lo exige Android para localizar la sesión que suena.
+        val granted = MediaRemote.listenerEnabled(this)
+        box.addView(permRow(R.string.media_perm, granted, Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)))
+        if (!granted) {
+            box.addView(mono(TextView(this), 10f, grey).apply {
+                text = getString(R.string.media_perm_hint)
+                setPadding(0, px(2), 0, px(6))
+            })
+        }
+        box.addView(divider())
+        // Sesión que se controlaría ahora mismo
+        box.addView(mono(TextView(this), 10f, grey).apply {
+            text = getString(R.string.media_session)
+            setPadding(0, px(10), 0, 0)
+        })
+        val s = if (granted) MediaRemote.describe(this) else null
+        box.addView(mono(TextView(this), 13f, if (s != null) Color.WHITE else grey).apply {
+            text = if (s == null) getString(R.string.media_session_none)
+            else getString(R.string.media_session_val, s.first,
+                getString(if (s.second) R.string.media_playing else R.string.media_paused))
+            setPadding(0, px(2), 0, px(10))
+        })
+        box.addView(divider())
+        // Prueba real: ¿llega la tecla a la app con la pantalla apagada?
+        val seen = Prefs.sp(this).getLong("off_seen_ess", 0L)
+        box.addView(mono(TextView(this), 10f, grey).apply {
+            text = getString(R.string.media_detect)
+            setPadding(0, px(10), 0, 0)
+        })
+        box.addView(mono(TextView(this), 11f, if (seen > 0) accent else Color.WHITE).apply {
+            text = if (seen > 0) getString(R.string.media_detect_ok,
+                java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.SHORT, java.text.DateFormat.SHORT)
+                    .format(java.util.Date(seen)))
+            else getString(R.string.media_detect_no)
+            setPadding(0, px(4), 0, px(6))
+        })
+        if (seen > 0) {
+            box.addView(mono(TextView(this), 10f, accent, true).apply {
+                text = "↺  " + getString(R.string.media_detect_reset)
+                setPadding(0, px(6), 0, px(4))
+                setOnClickListener {
+                    Prefs.sp(this@MainActivity).edit().remove("off_seen_ess").apply(); rebuild()
+                }
+            })
+        }
+        return box
     }
 
     // ---------- Menú rápido ----------

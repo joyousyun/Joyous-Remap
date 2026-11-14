@@ -3,7 +3,10 @@ package com.joyous.remap
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
 import android.app.NotificationManager
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Path
 import android.graphics.Rect
 import android.hardware.camera2.CameraCharacteristics
@@ -12,6 +15,7 @@ import android.media.AudioManager
 import android.net.wifi.WifiManager
 import android.os.Handler
 import android.os.Looper
+import android.os.PowerManager
 import android.os.VibrationEffect
 import android.os.VibratorManager
 import android.provider.MediaStore
@@ -67,6 +71,33 @@ class KeyService : AccessibilityService() {
 
     private fun act(g: Gesture): Act = eff.act(this, g)
 
+    // Modo multimedia con la pantalla apagada (se decide al empezar cada secuencia de pulsaciones)
+    private val pm by lazy { getSystemService(PowerManager::class.java) }
+    private var mediaMode = false
+
+    private val screenRx = object : BroadcastReceiver() {
+        override fun onReceive(c: Context?, i: Intent?) {
+            // Al encender la pantalla se vuelve al instante al comportamiento normal.
+            handler.removeCallbacks(longRun)
+            handler.removeCallbacks(resolveTaps)
+            taps = 0
+            longFired = false
+            mediaMode = false
+        }
+    }
+
+    /** Apunta que la tecla llegó con la pantalla apagada: es la prueba real de que el móvil la entrega. */
+    private fun noteOffKey(e: KeyEvent) {
+        if (e.action != KeyEvent.ACTION_DOWN) return
+        val k = if (e.keyCode == KeyEvent.KEYCODE_UNKNOWN) "off_seen_ess" else "off_seen_any"
+        val sp = Prefs.sp(this)
+        val now = System.currentTimeMillis()
+        if (now - sp.getLong(k, 0L) > 1000L) sp.edit().putLong(k, now).apply()
+    }
+
+    private fun has(g: Gesture): Boolean =
+        if (mediaMode) Prefs.mediaAct(this, g) != MediaAct.NONE else act(g) != Act.NONE
+
     // Teclados: sus ventanas no cuentan como "app en primer plano".
     private var imePkgs: Set<String> = emptySet()
     private var imeAt = 0L
@@ -114,6 +145,10 @@ class KeyService : AccessibilityService() {
         }
         cm = getSystemService(CameraManager::class.java)
         initTorch()
+        try {
+            registerReceiver(screenRx, IntentFilter(Intent.ACTION_SCREEN_ON), Context.RECEIVER_NOT_EXPORTED)
+        } catch (e: Exception) {
+        }
     }
 
     // ---------- Detección de pulsaciones ----------
@@ -124,18 +159,22 @@ class KeyService : AccessibilityService() {
             if (event.action == KeyEvent.ACTION_UP) quick.hide()
             return true
         }
+        if (!pm.isInteractive) noteOffKey(event)
         // La tecla Essential llega como KEYCODE_UNKNOWN (0).
         if (event.keyCode != KeyEvent.KEYCODE_UNKNOWN) return false
-        // Al empezar una pulsación nueva se elige perfil según la app de delante.
+        // Al empezar una pulsación nueva: con pantalla apagada y música sonando, controles multimedia;
+        // si no, se elige perfil según la app de delante.
         if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0 && taps == 0) {
-            eff = if (Profiles.any(this)) Profiles.resolve(this, foregroundPkg()) else Eff.NONE
+            mediaMode = Prefs.mediaOff(this) && !pm.isInteractive && MediaRemote.target(this) != null
+            eff = if (mediaMode) Eff.NONE
+            else if (Profiles.any(this)) Profiles.resolve(this, foregroundPkg()) else Eff.NONE
         }
         // App excluida: Joyous Remap no hace nada y la tecla sigue su camino normal.
-        if (eff.excluded) return false
-        if (Gesture.values().all { act(it) == Act.NONE }) return false
+        if (!mediaMode && eff.excluded) return false
+        if (Gesture.values().all { !has(it) }) return false
 
         // Ya dentro de la cámara: cada pulsación hace una foto al instante y sin avisos.
-        if (cameraMode()) {
+        if (!mediaMode && cameraMode()) {
             if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0) {
                 handler.removeCallbacks(longRun)
                 handler.removeCallbacks(resolveTaps)
@@ -154,7 +193,7 @@ class KeyService : AccessibilityService() {
                 if (event.repeatCount > 0) return true
                 longFired = false
                 if (sawUp) {
-                    if (act(Gesture.LONG) != Act.NONE) {
+                    if (has(Gesture.LONG)) {
                         handler.postDelayed(longRun, Prefs.longMs(this).toLong())
                     }
                 } else {
@@ -175,8 +214,8 @@ class KeyService : AccessibilityService() {
     }
 
     private fun maxTaps(): Int = when {
-        act(Gesture.TRIPLE) != Act.NONE -> 3
-        act(Gesture.DOUBLE) != Act.NONE -> 2
+        has(Gesture.TRIPLE) -> 3
+        has(Gesture.DOUBLE) -> 2
         else -> 1
     }
 
@@ -208,6 +247,13 @@ class KeyService : AccessibilityService() {
     }
 
     private fun run(g: Gesture) {
+        if (mediaMode) {
+            val m = Prefs.mediaAct(this, g)
+            if (m == MediaAct.NONE) return
+            if (Prefs.haptic(this)) buzz()
+            MediaRemote.send(this, m)
+            return
+        }
         val a = act(g)
         if (a == Act.NONE) return
         // Otra acción mientras el menú está abierto: se cierra antes.
@@ -618,6 +664,10 @@ class KeyService : AccessibilityService() {
         if (::overlay.isInitialized) overlay.remove()
         if (::panel.isInitialized) panel.hide(false)
         if (::quick.isInitialized) quick.hide(false)
+        try {
+            unregisterReceiver(screenRx)
+        } catch (e: Exception) {
+        }
         super.onDestroy()
     }
 }

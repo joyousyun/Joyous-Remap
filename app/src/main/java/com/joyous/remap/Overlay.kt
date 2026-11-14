@@ -334,23 +334,22 @@ private class EdgeView(
             seg
         }
 
-        canvas.save()
-        canvas.clipPath(shape) // solo se ve la mitad de dentro del trazo
+        // El trazo va centrado en el borde de la pantalla: la mitad de fuera no se ve. Sin recorte
+        // por trazado (muy caro en cada fotograma) y con menos capas de halo: mucho más fluido
+        // cuando otra app, como Spotify, ya está exigiendo a la GPU.
         paint.shader = if (edgeColor == 0) rainbow else null
-        // Halo difuminado: capas translúcidas cada vez más estrechas.
         if (softDp > 0f) {
-            val n = 5
+            val n = 3
             for (k in 0 until n) {
                 val e = (thickDp + softDp * (n - k) / n) * d
                 paint.strokeWidth = e * 2
-                tint(34 * fade)
+                tint(52 * fade)
                 canvas.drawPath(target, paint)
             }
         }
         paint.strokeWidth = thickDp * d * 2
         tint(255 * fade)
         canvas.drawPath(target, paint)
-        canvas.restore()
     }
 }
 

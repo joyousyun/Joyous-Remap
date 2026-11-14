@@ -278,4 +278,34 @@
     <string name="q_wifi_bt">Wi-Fi + Bluetooth</string>
     <string name="q_wifi_share">Compartir Wi-Fi</string>
     <string name="q_assistant">Asistente</string>
+
+    <string name="menu_media">Música con pantalla apagada</string>
+    <string name="menu_media_sub">Controla la música sin encender la pantalla</string>
+    <string name="sec_media">CONTROLES MULTIMEDIA CON PANTALLA APAGADA</string>
+    <string name="sec_media_status">ESTADO</string>
+    <string name="media_toggle">Controles multimedia con pantalla apagada</string>
+    <string name="media_desc">Solo con la pantalla apagada y una sesión de música activa. Con la pantalla encendida siempre se usan tus pulsaciones y perfiles normales.</string>
+    <string name="media_perm">Acceso a notificaciones</string>
+    <string name="media_perm_hint">Android lo exige para localizar la sesión que está sonando. Joyous Remap no lee tus notificaciones. Si el interruptor está bloqueado: Info de la app › ⋮ › Permitir ajustes restringidos.</string>
+    <string name="media_session">SESIÓN AHORA</string>
+    <string name="media_session_none">Ninguna (no suena nada)</string>
+    <string name="media_session_val">%1$s · %2$s</string>
+    <string name="media_playing">sonando</string>
+    <string name="media_paused">en pausa</string>
+    <string name="media_detect">DETECCIÓN DE LA TECLA CON PANTALLA APAGADA</string>
+    <string name="media_detect_ok">✓ La tecla llegó a Joyous Remap con la pantalla apagada (%1$s).</string>
+    <string name="media_detect_no">Aún no detectada. Apaga la pantalla, pulsa la tecla varias veces, enciéndela y vuelve aquí. Si sigue igual, Android o Nothing no entregan la tecla con la pantalla apagada y esta función no puede funcionar en este móvil.</string>
+    <string name="media_detect_reset">REPETIR PRUEBA</string>
+    <string name="pick_media">Elige la acción multimedia</string>
+    <string name="ma_none">Desactivada</string>
+    <string name="ma_play_pause">Play / pausa</string>
+    <string name="ma_play">Reproducir</string>
+    <string name="ma_pause">Pausa</string>
+    <string name="ma_next">Siguiente canción</string>
+    <string name="ma_prev">Canción anterior</string>
+    <string name="ma_stop">Detener</string>
+    <string name="ma_forward">Avance rápido</string>
+    <string name="ma_rewind">Retroceso</string>
+    <string name="ma_vol_up">Subir volumen</string>
+    <string name="ma_vol_down">Bajar volumen</string>
 </resources>
