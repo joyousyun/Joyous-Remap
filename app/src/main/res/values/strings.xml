@@ -29,6 +29,7 @@
     <string name="act_sound">Sound mode (sound / vibrate / silent)</string>
     <string name="act_music">Music: play / pause</string>
     <string name="act_music_next">Music: next song</string>
+    <string name="act_music_prev">Music: previous song</string>
     <string name="act_rotation">Auto-rotate on / off</string>
     <string name="act_dnd">Do not disturb</string>
     <string name="act_screenshot">Screenshot</string>
@@ -79,6 +80,7 @@
     <string name="lbl_silent">Silent</string>
     <string name="lbl_play_pause">Play / pause</string>
     <string name="lbl_next">Next song</string>
+    <string name="lbl_prev">Previous song</string>
     <string name="lbl_rot_on">Auto-rotate on</string>
     <string name="lbl_rot_off">Auto-rotate off</string>
     <string name="lbl_dnd_on">Do not disturb on</string>

@@ -86,6 +86,7 @@ enum class Act(val id: String, val label: Int) {
     SOUND("sound", R.string.act_sound),
     MUSIC("music", R.string.act_music),
     MUSIC_NEXT("music_next", R.string.act_music_next),
+    MUSIC_PREV("music_prev", R.string.act_music_prev),
     ROTATION("rotation", R.string.act_rotation),
     DND("dnd", R.string.act_dnd),
     SCREENSHOT("screenshot", R.string.act_screenshot),

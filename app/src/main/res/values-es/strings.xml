@@ -29,6 +29,7 @@
     <string name="act_sound">Modo sonido (sonido / vibración / silencio)</string>
     <string name="act_music">Música: reproducir / pausar</string>
     <string name="act_music_next">Música: siguiente canción</string>
+    <string name="act_music_prev">Música: canción anterior</string>
     <string name="act_rotation">Rotación automática</string>
     <string name="act_dnd">No molestar</string>
     <string name="act_screenshot">Captura de pantalla</string>
@@ -79,6 +80,7 @@
     <string name="lbl_silent">Silencio</string>
     <string name="lbl_play_pause">Reproducir / pausar</string>
     <string name="lbl_next">Siguiente canción</string>
+    <string name="lbl_prev">Canción anterior</string>
     <string name="lbl_rot_on">Rotación activada</string>
     <string name="lbl_rot_off">Rotación desactivada</string>
     <string name="lbl_dnd_on">No molestar activado</string>

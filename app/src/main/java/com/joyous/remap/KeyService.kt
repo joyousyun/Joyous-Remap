@@ -241,6 +241,7 @@ class KeyService : AccessibilityService() {
             Act.SOUND -> cycleSound()
             Act.MUSIC -> media(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, R.string.lbl_play_pause)
             Act.MUSIC_NEXT -> media(KeyEvent.KEYCODE_MEDIA_NEXT, R.string.lbl_next)
+            Act.MUSIC_PREV -> media(KeyEvent.KEYCODE_MEDIA_PREVIOUS, R.string.lbl_prev)
             Act.ROTATION -> toggleRotation()
             Act.DND -> toggleDnd()
             Act.SCREENSHOT -> performGlobalAction(GLOBAL_ACTION_TAKE_SCREENSHOT)
