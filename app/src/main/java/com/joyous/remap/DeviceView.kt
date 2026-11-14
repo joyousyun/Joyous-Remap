@@ -274,11 +274,17 @@ class DeviceView(ctx: Context) : View(ctx) {
         // dial rojo, pegado a la esquina inferior derecha
         fill(RED); circle(c, 0.864f, 0.939f, 0.126f)
         fill(0xFF9A1C22.toInt()); circleS(c, 0.864f, 0.939f, 0.11f)
-        // marca
+        // marca: vertical, se lee de abajo hacia arriba como en el móvil real
         p.style = Paint.Style.FILL; p.color = 0xFF8A8E96.toInt(); p.textAlign = Paint.Align.LEFT
         p.typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
-        p.textSize = W(0.1f); c.drawText("cmf", X(0.1f), Y(0.755f), p)
-        p.textSize = W(0.05f); c.drawText("by NOTHING", X(0.1f), Y(0.785f), p)
+        c.save()
+        c.rotate(-90f, X(0.157f), Y(0.80f))
+        p.textSize = W(0.1f); c.drawText("cmf", X(0.157f), Y(0.80f), p)
+        c.restore()
+        c.save()
+        c.rotate(-90f, X(0.20f), Y(0.80f))
+        p.textSize = W(0.032f); c.drawText("by NOTHING", X(0.20f), Y(0.80f), p)
+        c.restore()
     }
 
     private fun ringLens(c: Canvas, cx: Float, cy: Float, rad: Float, ring: Int) {
