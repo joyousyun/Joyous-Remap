@@ -72,8 +72,17 @@ class Overlay(private val ctx: Context) {
 
         val showChip = Prefs.chipOn(ctx)
         if (!showChip && !Prefs.edge(ctx)) return
-        val b = wm.maximumWindowMetrics.bounds
-        val root = FrameLayout(ctx)
+        // El tamaño real lo da la propia ventana (MATCH_PARENT): así sigue la rotación de pantalla.
+        val chipTop = Prefs.chipY(ctx) / 100f
+        val root = object : FrameLayout(ctx) {
+            override fun onSizeChanged(w: Int, h: Int, ow: Int, oh: Int) {
+                super.onSizeChanged(w, h, ow, oh)
+                (chip.layoutParams as? LayoutParams)?.let {
+                    it.topMargin = (h * chipTop).toInt()
+                    chip.requestLayout()
+                }
+            }
+        }
         var edgeView: EdgeView? = null
         if (Prefs.edge(ctx)) {
             edgeView = EdgeView(
@@ -86,13 +95,11 @@ class Overlay(private val ctx: Context) {
         if (showChip) {
             root.addView(
                 chip,
-                FrameLayout.LayoutParams(-2, -2, Gravity.TOP or Gravity.CENTER_HORIZONTAL).apply {
-                    topMargin = (b.height() * Prefs.chipY(ctx) / 100f).toInt()
-                }
+                FrameLayout.LayoutParams(-2, -2, Gravity.TOP or Gravity.CENTER_HORIZONTAL)
             )
         }
         val lp = WindowManager.LayoutParams(
-            b.width(), b.height(),
+            WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
@@ -210,8 +217,14 @@ private class EdgeView(
         len = m.length
         rainbow = SweepGradient(w / 2f, h / 2f, Prefs.RAINBOW, null)
         // Punto del contorno más cercano a la tecla (lateral de la tecla).
-        val tx = if (keyLeft) 0f else w.toFloat()
-        val ty = h * keyFrac
+        // Con la pantalla girada la tecla pasa a otro borde del contorno.
+        val fw = w.toFloat(); val fh = h.toFloat()
+        val (tx, ty) = when (display?.rotation ?: 0) {
+            1 -> if (keyLeft) (keyFrac * fw) to fh else (keyFrac * fw) to 0f
+            2 -> (if (keyLeft) fw else 0f) to (fh * (1f - keyFrac))
+            3 -> if (keyLeft) (fw * (1f - keyFrac)) to 0f else (fw * (1f - keyFrac)) to fh
+            else -> (if (keyLeft) 0f else fw) to (fh * keyFrac)
+        }
         val pos = FloatArray(2)
         var best = Float.MAX_VALUE
         var bestDist = 0f
