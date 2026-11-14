@@ -268,8 +268,8 @@ class DeviceView(ctx: Context) : View(ctx) {
         fill(0xFFE8E0C8.toInt()); circle(c, 0.361f, 0.164f, 0.034f)
         fill(0xFFB4A78A.toInt()); circle(c, 0.361f, 0.164f, 0.02f)
         // lentes grandes
-        ringLens(c, 0.147f, 0.064f, 0.11f, metal)
-        ringLens(c, 0.139f, 0.194f, 0.105f, metal)
+        ringLens(c, 0.145f, 0.064f, 0.112f, metal)
+        ringLens(c, 0.145f, 0.195f, 0.112f, metal)
         screws(c, listOf(0.359f to 0.021f, 0.055f to 0.288f, 0.945f to 0.29f, 0.05f to 0.89f), 0.018f)
         // dial rojo, pegado a la esquina inferior derecha
         fill(RED); circle(c, 0.864f, 0.939f, 0.126f)
