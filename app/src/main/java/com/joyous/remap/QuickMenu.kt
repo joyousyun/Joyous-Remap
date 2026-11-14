@@ -169,23 +169,19 @@ class QuickMenu(private val ctx: Context, private val onPick: (Act, String?) -> 
         val rootView = FrameLayout(ctx).apply { setOnClickListener { hide() } }
         val side = (14 * d).toInt()
         val lo = (40 * d).toInt()
+        // La altura se calcula antes de mostrarlo, con el tamaño real de la pantalla y del menú.
+        val bounds = wm.currentWindowMetrics.bounds
+        val sh = bounds.height()
+        card.measure(
+            View.MeasureSpec.makeMeasureSpec(bounds.width(), View.MeasureSpec.AT_MOST),
+            View.MeasureSpec.makeMeasureSpec(sh, View.MeasureSpec.AT_MOST)
+        )
+        val mh = card.measuredHeight
         val mlp = FrameLayout.LayoutParams(-2, -2, Gravity.TOP or (if (dir > 0) Gravity.END else Gravity.START)).apply {
             if (dir > 0) rightMargin = side else leftMargin = side
+            topMargin = (sh * yPct / 100f - mh / 2f).toInt().coerceIn(lo, (sh - mh - lo).coerceAtLeast(lo))
         }
         rootView.addView(card, mlp)
-        // Centra el menú en la altura elegida cuando ya se conoce su tamaño.
-        card.addOnLayoutChangeListener { v, _, _, _, _, _, _, _, _ ->
-            val h = rootView.height
-            if (h > 0) {
-                val want = (h * yPct / 100f - v.height / 2f).toInt()
-                    .coerceIn(lo, (h - v.height - lo).coerceAtLeast(lo))
-                val lp = v.layoutParams as FrameLayout.LayoutParams
-                if (lp.topMargin != want) {
-                    lp.topMargin = want
-                    v.layoutParams = lp
-                }
-            }
-        }
 
         val wlp = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT,
