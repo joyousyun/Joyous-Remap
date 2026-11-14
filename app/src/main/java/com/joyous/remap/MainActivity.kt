@@ -151,9 +151,11 @@ class MainActivity : Activity() {
                 }
                 c.addView(sectionTitle(R.string.sec_gestures))
                 c.addView(gesturesCard())
+                c.addView(sectionTitle(R.string.sec_profiles))
+                c.addView(profilesCard())
                 c.addView(menuCard())
             }
-            else -> {
+            else -> if (page!!.startsWith("prof:") || page == "excl") buildProfilePage(c) else {
                 c.addView(pageHeader(when (page) {
                     "look" -> DotIconView.LOOK
                     "panel" -> DotIconView.PANEL
@@ -212,14 +214,16 @@ class MainActivity : Activity() {
         Gesture.TRIPLE -> DotIconView.TRIPLE
     }
 
-    private fun pageHeader(rows: List<String>, title: Int): View {
+    private fun pageHeader(rows: List<String>, title: Int): View = pageHeader(rows, getString(title))
+
+    private fun pageHeader(rows: List<String>, title: String): View {
         val h = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
             setPadding(0, px(6), 0, px(6))
         }
         h.addView(icon(rows, 40))
-        h.addView(mono(TextView(this), 20f, Color.WHITE, true).apply { text = getString(title).uppercase() },
+        h.addView(mono(TextView(this), 20f, Color.WHITE, true).apply { text = title.uppercase() },
             LinearLayout.LayoutParams(0, -2, 1f))
         h.addView(LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -419,11 +423,10 @@ class MainActivity : Activity() {
         }
     }
 
-    private fun describe(g: Gesture): String {
-        val a = Prefs.action(this, g)
-        return if (a == Act.APP) getString(R.string.act_app_named, appLabel(Prefs.pkg(this, g)))
-        else getString(a.label)
-    }
+    private fun describe(g: Gesture): String = describeAct(Prefs.action(this, g), Prefs.pkg(this, g))
+
+    private fun describeAct(a: Act, pkg: String?): String =
+        if (a == Act.APP) getString(R.string.act_app_named, appLabel(pkg)) else getString(a.label)
 
     private fun gesturesCard(): View {
         val box = cardBox()
@@ -452,30 +455,39 @@ class MainActivity : Activity() {
 
     private fun darkDialog() = AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
 
-    private fun pickAction(g: Gesture) {
+    private fun pickAction(g: Gesture) = chooseAction(R.string.pick_action, false) { a, pkg ->
+        if (a != null) {
+            Prefs.setAction(this, g, a)
+            if (pkg != null) Prefs.setPkg(this, g, pkg)
+            rebuild()
+        }
+    }
+
+    /**
+     * Selector de acciones único: lo usan las pulsaciones generales y los perfiles.
+     * Con [inherit] se añade arriba "Ajuste general" y devuelve (null, null).
+     */
+    private fun chooseAction(title: Int, inherit: Boolean, onChosen: (Act?, String?) -> Unit) {
         val acts = Act.values()
-        val labels = acts.map { getString(it.label) }.toTypedArray()
+        val labels = (if (inherit) listOf(getString(R.string.prof_inherit)) else emptyList()) +
+            acts.map { getString(it.label) }
         darkDialog()
-            .setTitle(R.string.pick_action)
-            .setItems(labels) { _, i ->
-                val a = acts[i]
-                if (a == Act.APP) pickApp(g)
-                else {
-                    Prefs.setAction(this, g, a)
-                    rebuild()
+            .setTitle(title)
+            .setItems(labels.toTypedArray()) { _, i ->
+                val k = if (inherit) i - 1 else i
+                when {
+                    k < 0 -> onChosen(null, null)
+                    acts[k] == Act.APP -> chooseApp { onChosen(Act.APP, it) }
+                    else -> onChosen(acts[k], null)
                 }
             }.show()
     }
 
-    private fun pickApp(g: Gesture) {
+    private fun chooseApp(onPick: (String) -> Unit) {
         val labels = apps.map { it.first }.toTypedArray()
         darkDialog()
             .setTitle(R.string.pick_app)
-            .setItems(labels) { _, i ->
-                Prefs.setAction(this, g, Act.APP)
-                Prefs.setPkg(this, g, apps[i].second)
-                rebuild()
-            }.show()
+            .setItems(labels) { _, i -> onPick(apps[i].second) }.show()
     }
 
     // ----- Ajustes de tiempo -----
@@ -905,6 +917,431 @@ class MainActivity : Activity() {
                 )
                 rebuild()
             }
+        }.start()
+    }
+
+    // ---------- Perfiles por aplicación ----------
+
+    private val iconCache = java.util.concurrent.ConcurrentHashMap<String, android.graphics.drawable.Drawable>()
+
+    private fun appIcon(pkg: String): android.graphics.drawable.Drawable? {
+        iconCache[pkg]?.let { return it }
+        return try {
+            packageManager.getApplicationIcon(pkg).also { iconCache[pkg] = it }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun isInstalled(pkg: String) = try {
+        packageManager.getApplicationInfo(pkg, 0); true
+    } catch (e: Exception) {
+        false
+    }
+
+    private fun lp(w: Int, h: Int, weight: Float = 0f) = LinearLayout.LayoutParams(w, h, weight)
+
+    /** Hilera de iconos de apps (hasta [max]) con "+N" si hay más. */
+    private fun appStrip(pkgs: List<String>, max: Int): View {
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(0, px(6), 0, 0)
+        }
+        val shown = pkgs.filter { isInstalled(it) }
+        shown.take(max).forEach { pk ->
+            row.addView(android.widget.ImageView(this).apply { setImageDrawable(appIcon(pk)) },
+                lp(px(22), px(22)).apply { rightMargin = px(6) })
+        }
+        if (pkgs.size > max) row.addView(mono(TextView(this), 10f, grey).apply { text = "+${pkgs.size - max}" })
+        return row
+    }
+
+    private fun profileSub(p: Profile): String {
+        val names = if (p.pkgs.isEmpty()) getString(R.string.prof_no_apps)
+        else p.pkgs.take(3).joinToString(", ") { appLabel(it) } +
+            (if (p.pkgs.size > 3) " +${p.pkgs.size - 3}" else "")
+        return getString(if (p.except) R.string.prof_sub_except else R.string.prof_sub_only, names)
+    }
+
+    private fun profilesCard(): View {
+        val box = cardBox()
+        val list = Profiles.all(this)
+        if (list.isEmpty()) {
+            box.addView(mono(TextView(this), 11f, grey).apply {
+                text = getString(R.string.prof_none)
+                setPadding(0, px(6), 0, px(10))
+            })
+        }
+        list.forEachIndexed { i, p ->
+            box.addView(profileRow(p, i))
+            box.addView(divider())
+        }
+        box.addView(simpleRow(DotIconView.PLUS, getString(R.string.prof_new), null) {
+            val id = Profiles.newId()
+            Profiles.add(this, Profile(id, getString(R.string.prof_default_name, list.size + 1)))
+            go("prof:$id")
+        })
+        box.addView(divider())
+        val ex = Profiles.excluded(this)
+        box.addView(simpleRow(
+            DotIconView.EXCLUDE, getString(R.string.excl_title),
+            if (ex.isEmpty()) getString(R.string.excl_sub)
+            else resources.getQuantityString(R.plurals.n_apps, ex.size, ex.size)
+        ) { go("excl") })
+        if (list.size > 1) {
+            box.addView(mono(TextView(this), 10f, grey).apply {
+                text = getString(R.string.prof_hint)
+                setPadding(0, px(8), 0, px(4))
+            })
+        }
+        return box
+    }
+
+    private fun simpleRow(rows: List<String>, title: String, sub: String?, onClick: () -> Unit): View {
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(0, px(12), 0, px(12))
+            setOnClickListener { onClick() }
+        }
+        row.addView(icon(rows, 32))
+        val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        col.addView(mono(TextView(this), 14f, Color.WHITE).apply { text = title })
+        if (sub != null) col.addView(mono(TextView(this), 10f, grey).apply { text = sub })
+        row.addView(col, lp(0, -2, 1f))
+        row.addView(mono(TextView(this), 18f, grey).apply { text = "›" })
+        return row
+    }
+
+    private fun profileRow(p: Profile, idx: Int): View {
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(0, px(12), 0, px(12))
+            setOnClickListener { go("prof:" + p.id) }
+        }
+        row.addView(icon(DotIconView.PROFILE, 32, if (p.enabled) accent else grey))
+        val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        col.addView(mono(TextView(this), 14f, if (p.enabled) Color.WHITE else grey).apply {
+            text = "#${idx + 1}  ${p.name}"
+            setSingleLine()
+            ellipsize = android.text.TextUtils.TruncateAt.END
+        })
+        col.addView(mono(TextView(this), 10f, grey).apply {
+            text = profileSub(p)
+            setSingleLine()
+            ellipsize = android.text.TextUtils.TruncateAt.END
+        })
+        if (p.pkgs.isNotEmpty()) col.addView(appStrip(p.pkgs, 7))
+        row.addView(col, lp(0, -2, 1f))
+        row.addView(mono(TextView(this), 18f, if (p.enabled) accent else grey, true).apply {
+            text = if (p.enabled) "●" else "○"
+            setPadding(px(14), px(10), px(4), px(10))
+            setOnClickListener {
+                Profiles.update(this@MainActivity, p.id) { it.copy(enabled = !it.enabled) }
+                rebuild()
+            }
+        })
+        return row
+    }
+
+    /** Pantalla de un perfil o de las exclusiones. */
+    private fun buildProfilePage(c: LinearLayout) {
+        val pg = page ?: return
+        if (pg == "excl") {
+            c.addView(pageHeader(DotIconView.EXCLUDE, R.string.excl_title))
+            val box = cardBox()
+            box.addView(mono(TextView(this), 11f, grey).apply {
+                text = getString(R.string.excl_desc)
+                setPadding(0, px(6), 0, px(10))
+            })
+            val ex = Profiles.excluded(this).toList()
+            appRows(box, ex) { pk -> Profiles.setExcluded(this, Profiles.excluded(this) - pk); rebuild() }
+            box.addView(pill(getString(R.string.prof_pick_apps), true) {
+                pickApps(R.string.excl_pick, Profiles.excluded(this)) { Profiles.setExcluded(this, it); rebuild() }
+            }, lp(-1, px(44)).apply { topMargin = px(10) })
+            c.addView(box)
+            return
+        }
+        val p = Profiles.get(this, pg.substring(5))
+        if (p == null) {
+            c.addView(pageHeader(DotIconView.PROFILE, "?"))
+            return
+        }
+        val all = Profiles.all(this)
+        val idx = all.indexOfFirst { it.id == p.id }
+        c.addView(pageHeader(DotIconView.PROFILE, p.name))
+
+        // Datos generales
+        val top = cardBox()
+        top.addView(pickerRow(R.string.prof_name, p.name) { renameProfile(p) })
+        top.addView(divider())
+        top.addView(toggle(R.string.prof_enabled, p.enabled) {
+            Profiles.update(this, p.id) { q -> q.copy(enabled = it) }
+        })
+        top.addView(divider())
+        val pr = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(0, px(10), 0, px(6))
+        }
+        val pc = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        pc.addView(mono(TextView(this), 10f, grey).apply { text = getString(R.string.prof_priority) })
+        pc.addView(mono(TextView(this), 14f, Color.WHITE).apply {
+            text = getString(R.string.prof_prio_pos, idx + 1, all.size)
+        })
+        pr.addView(pc, lp(0, -2, 1f))
+        pr.addView(pill(getString(R.string.prof_up), false) {
+            Profiles.move(this, p.id, -1); rebuild()
+        }.apply { alpha = if (idx > 0) 1f else 0.3f }, lp(px(92), px(38)).apply { rightMargin = px(6) })
+        pr.addView(pill(getString(R.string.prof_down), false) {
+            Profiles.move(this, p.id, 1); rebuild()
+        }.apply { alpha = if (idx < all.size - 1) 1f else 0.3f }, lp(px(92), px(38)))
+        top.addView(pr)
+        c.addView(top)
+
+        // Dónde se aplica
+        c.addView(sectionTitle(R.string.prof_mode))
+        val where = cardBox()
+        where.addView(segmented(
+            listOf(getString(R.string.prof_mode_only), getString(R.string.prof_mode_except)),
+            if (p.except) 1 else 0
+        ) { i -> Profiles.update(this, p.id) { it.copy(except = i == 1) }; rebuild() }, lp(-1, px(38)))
+        where.addView(mono(TextView(this), 10f, grey).apply {
+            text = getString(if (p.except) R.string.prof_mode_except_d else R.string.prof_mode_only_d)
+            setPadding(0, px(10), 0, px(6))
+        })
+        where.addView(divider())
+        appRows(where, p.pkgs) { pk ->
+            Profiles.update(this, p.id) { it.copy(pkgs = it.pkgs - pk) }; rebuild()
+        }
+        where.addView(pill(getString(R.string.prof_pick_apps), true) {
+            pickApps(R.string.prof_pick_apps, p.pkgs.toSet()) { s ->
+                Profiles.update(this, p.id) { it.copy(pkgs = s.toList()) }; rebuild()
+            }
+        }, lp(-1, px(44)).apply { topMargin = px(10) })
+        c.addView(where)
+
+        // Pulsaciones propias o heredadas
+        c.addView(sectionTitle(R.string.prof_presses))
+        val gs = cardBox()
+        val gAll = Gesture.values()
+        gAll.forEachIndexed { i, g ->
+            val own = p.acts[g]
+            val row = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding(0, px(10), 0, px(10))
+                setOnClickListener {
+                    chooseAction(R.string.prof_pick_action, true) { a, pkg ->
+                        Profiles.update(this@MainActivity, p.id) { q ->
+                            q.copy(acts = if (a == null) q.acts - g else q.acts + (g to ProfileAct(a, pkg)))
+                        }
+                        rebuild()
+                    }
+                }
+            }
+            row.addView(icon(gestureIcon(g), 32, if (own != null) accent else grey))
+            val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+            col.addView(mono(TextView(this), 10f, grey).apply { text = getString(g.label) })
+            col.addView(mono(TextView(this), 14f, if (own != null) Color.WHITE else grey).apply {
+                text = if (own != null) describeAct(own.act, own.pkg)
+                else getString(R.string.prof_inherit_val, describe(g))
+            })
+            row.addView(col, lp(0, -2, 1f))
+            row.addView(mono(TextView(this), 18f, grey).apply { text = "›" })
+            gs.addView(row)
+            if (i < gAll.size - 1) gs.addView(divider())
+        }
+        c.addView(gs)
+
+        c.addView(pill(getString(R.string.prof_delete), false) {
+            darkDialog()
+                .setMessage(getString(R.string.prof_delete_q, p.name))
+                .setPositiveButton(android.R.string.ok) { _, _ -> Profiles.delete(this, p.id); go(null) }
+                .setNegativeButton(android.R.string.cancel, null)
+                .show()
+        }, lp(-1, px(44)).apply { topMargin = px(24) })
+    }
+
+    /** Lista de apps con icono y nombre; la ✕ quita una. */
+    private fun appRows(box: LinearLayout, pkgs: List<String>, onRemove: (String) -> Unit) {
+        if (pkgs.isEmpty()) {
+            box.addView(mono(TextView(this), 12f, grey).apply {
+                text = getString(R.string.prof_apps_tap).removeSuffix("  ›")
+                setPadding(0, px(8), 0, px(4))
+            })
+            return
+        }
+        pkgs.sortedBy { appLabel(it).lowercase() }.forEach { pk ->
+            val row = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding(0, px(6), 0, px(6))
+            }
+            row.addView(android.widget.ImageView(this).apply { setImageDrawable(appIcon(pk)) },
+                lp(px(30), px(30)).apply { rightMargin = px(12) })
+            val installed = isInstalled(pk)
+            row.addView(mono(TextView(this), 13f, if (installed) Color.WHITE else grey).apply {
+                text = appLabel(pk)
+                setSingleLine()
+                ellipsize = android.text.TextUtils.TruncateAt.END
+            }, lp(0, -2, 1f))
+            row.addView(mono(TextView(this), 14f, grey, true).apply {
+                text = "✕"
+                setPadding(px(14), px(6), px(4), px(6))
+                setOnClickListener { onRemove(pk) }
+            })
+            box.addView(row)
+        }
+    }
+
+    private fun renameProfile(p: Profile) {
+        val et = android.widget.EditText(this).apply {
+            setText(p.name)
+            setSelectAllOnFocus(true)
+            setSingleLine()
+            setTextColor(Color.WHITE)
+            typeface = Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL)
+        }
+        val wrap = FrameLayout(this).apply {
+            setPadding(px(24), px(8), px(24), 0)
+            addView(et)
+        }
+        darkDialog()
+            .setTitle(R.string.prof_name_title)
+            .setView(wrap)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                val n = et.text.toString().trim()
+                if (n.isNotEmpty()) Profiles.update(this, p.id) { it.copy(name = n.take(40)) }
+                rebuild()
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    /** Selector de varias apps a pantalla completa, con buscador, iconos y nombres. */
+    private fun pickApps(title: Int, selected: Set<String>, onDone: (Set<String>) -> Unit) {
+        val sel = selected.toMutableSet()
+        val known = apps.filter { it.second != packageName }
+        val extra = selected.filter { s -> known.none { it.second == s } }.map { appLabel(it) to it }
+        // Las ya elegidas arriba (orden fijo mientras está abierto), luego el resto A-Z.
+        val base = (extra + known).sortedWith(
+            compareBy<Pair<String, String>>({ it.second !in selected }, { it.first.lowercase() })
+        )
+        var shown = base
+
+        val dlg = android.app.Dialog(this, android.R.style.Theme_DeviceDefault_NoActionBar)
+        dlg.window?.setBackgroundDrawable(ColorDrawable(Color.BLACK))
+        dlg.window?.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        val box = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setBackgroundColor(Color.BLACK)
+            setPadding(px(16), px(40), px(16), px(8))
+        }
+        val count = mono(TextView(this), 10f, grey)
+        fun refreshCount() { count.text = getString(R.string.picker_count, sel.size) }
+        refreshCount()
+
+        val head = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        head.addView(mono(TextView(this), 18f, Color.WHITE, true).apply { text = getString(title).uppercase() },
+            lp(0, -2, 1f))
+        head.addView(pill(getString(R.string.picker_done), true) {
+            onDone(sel.toSet()); dlg.dismiss()
+        }, lp(px(96), px(40)))
+        box.addView(head)
+
+        val search = android.widget.EditText(this).apply {
+            hint = getString(R.string.picker_search)
+            setHintTextColor(grey)
+            setTextColor(Color.WHITE)
+            typeface = Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL)
+            textSize = 13f
+            setSingleLine()
+            setPadding(px(16), px(10), px(16), px(10))
+            background = GradientDrawable().apply {
+                cornerRadius = px(100).toFloat()
+                setStroke(px(1), 0x88FFFFFF.toInt())
+            }
+        }
+        box.addView(search, lp(-1, px(44)).apply { topMargin = px(14); bottomMargin = px(8) })
+        box.addView(count, lp(-2, -2).apply { leftMargin = px(6); bottomMargin = px(4) })
+
+        val list = android.widget.ListView(this).apply {
+            divider = null
+            cacheColorHint = 0
+            setBackgroundColor(Color.TRANSPARENT)
+            isVerticalScrollBarEnabled = false
+        }
+        val adapter = object : android.widget.BaseAdapter() {
+            override fun getCount() = shown.size
+            override fun getItem(i: Int) = shown[i]
+            override fun getItemId(i: Int) = i.toLong()
+            override fun getView(i: Int, v: View?, parent: android.view.ViewGroup?): View {
+                val (name, pk) = shown[i]
+                val row = (v as? LinearLayout) ?: LinearLayout(this@MainActivity).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER_VERTICAL
+                    setPadding(px(4), px(8), px(4), px(8))
+                    addView(android.widget.ImageView(this@MainActivity), lp(px(36), px(36)).apply { rightMargin = px(14) })
+                    val col = LinearLayout(this@MainActivity).apply { orientation = LinearLayout.VERTICAL }
+                    col.addView(mono(TextView(this@MainActivity), 14f, Color.WHITE).apply {
+                        setSingleLine(); ellipsize = android.text.TextUtils.TruncateAt.END
+                    })
+                    col.addView(mono(TextView(this@MainActivity), 9f, grey).apply {
+                        setSingleLine(); ellipsize = android.text.TextUtils.TruncateAt.END
+                    })
+                    addView(col, lp(0, -2, 1f))
+                    addView(mono(TextView(this@MainActivity), 18f, grey, true).apply {
+                        setPadding(px(12), 0, px(4), 0)
+                    })
+                }
+                (row.getChildAt(0) as android.widget.ImageView).setImageDrawable(iconCache[pk])
+                val col = row.getChildAt(1) as LinearLayout
+                (col.getChildAt(0) as TextView).text = name
+                (col.getChildAt(1) as TextView).text = pk
+                val on = pk in sel
+                (row.getChildAt(2) as TextView).apply {
+                    text = if (on) "●" else "○"
+                    setTextColor(if (on) accent else grey)
+                }
+                return row
+            }
+        }
+        list.adapter = adapter
+        list.setOnItemClickListener { _, _, i, _ ->
+            val pk = shown[i].second
+            if (!sel.add(pk)) sel.remove(pk)
+            refreshCount()
+            adapter.notifyDataSetChanged()
+        }
+        search.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                val q = s?.toString()?.trim()?.lowercase().orEmpty()
+                shown = if (q.isEmpty()) base
+                else base.filter { it.first.lowercase().contains(q) || it.second.lowercase().contains(q) }
+                adapter.notifyDataSetChanged()
+            }
+        })
+        box.addView(list, lp(-1, 0, 1f))
+        dlg.setContentView(box)
+        dlg.window?.setLayout(-1, -1)
+        dlg.show()
+
+        // Los iconos se cargan fuera del hilo principal y la lista se va rellenando.
+        Thread {
+            var n = 0
+            for ((_, pk) in base) {
+                appIcon(pk)
+                if (++n % 25 == 0) runOnUiThread { adapter.notifyDataSetChanged() }
+            }
+            runOnUiThread { adapter.notifyDataSetChanged() }
         }.start()
     }
 

@@ -198,4 +198,47 @@
     <string name="dev_reset">RESTAURAR PERFIL</string>
     <string name="dev_back_view">VISTA TRASERA</string>
     <string name="btn_off_desc">Apagar la linterna</string>
+
+    <string name="sec_profiles">PERFILES</string>
+    <string name="prof_none">Aún no hay perfiles. Crea uno para cambiar las pulsaciones en apps concretas.</string>
+    <string name="prof_new">NUEVO PERFIL</string>
+    <string name="prof_default_name">Perfil %1$d</string>
+    <string name="prof_hint">Si varios perfiles encajan con una app, gana el que está más arriba en la lista. En el resto se usan las pulsaciones generales.</string>
+    <string name="prof_mode">DÓNDE SE APLICA</string>
+    <string name="prof_mode_only">SOLO SELECCIONADAS</string>
+    <string name="prof_mode_except">TODAS EXCEPTO</string>
+    <string name="prof_sub_only">Solo en: %1$s</string>
+    <string name="prof_sub_except">Todas menos: %1$s</string>
+    <string name="prof_no_apps">aún sin apps</string>
+    <string name="prof_off_tag">NO</string>
+    <string name="prof_enabled">Perfil activo</string>
+    <string name="prof_name">NOMBRE</string>
+    <string name="prof_name_title">Nombre del perfil</string>
+    <string name="prof_apps">APLICACIONES</string>
+    <string name="prof_apps_tap">Toca para elegir apps  ›</string>
+    <string name="prof_presses">PULSACIONES DE ESTE PERFIL</string>
+    <string name="prof_inherit">Ajuste general</string>
+    <string name="prof_inherit_val">General · %1$s</string>
+    <string name="prof_pick_action">Acción de esta pulsación</string>
+    <string name="prof_priority">PRIORIDAD</string>
+    <string name="prof_prio_pos">n.º %1$d de %2$d</string>
+    <string name="prof_up">▲ SUBIR</string>
+    <string name="prof_down">▼ BAJAR</string>
+    <string name="prof_delete">ELIMINAR PERFIL</string>
+    <string name="prof_delete_q">¿Eliminar «%1$s»? Las pulsaciones generales no se ven afectadas.</string>
+    <string name="prof_pick_apps">Elige las apps</string>
+    <string name="picker_search">Buscar app</string>
+    <string name="picker_done">LISTO</string>
+    <string name="picker_count">Seleccionadas: %1$d</string>
+    <string name="excl_title">APPS EXCLUIDAS</string>
+    <string name="excl_sub">Joyous Remap no hace nada ahí</string>
+    <string name="excl_desc">En estas apps Joyous Remap no ejecuta ninguna acción y deja pasar la tecla al sistema. Si desactivaste Essential Space, esto no lo restaura.</string>
+    <string name="excl_none">Ninguna app excluida  ›</string>
+    <string name="excl_pick">Elige las apps a excluir</string>
+    <plurals name="n_apps">
+        <item quantity="one">%d app</item>
+        <item quantity="other">%d apps</item>
+    </plurals>
+    <string name="prof_mode_only_d">El perfil solo funciona en las apps que elijas.</string>
+    <string name="prof_mode_except_d">El perfil funciona en todas las apps menos en las que elijas.</string>
 </resources>

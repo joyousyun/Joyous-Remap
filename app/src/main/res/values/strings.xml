@@ -198,4 +198,47 @@
     <string name="dev_reset">RESTORE PROFILE</string>
     <string name="dev_back_view">REAR VIEW</string>
     <string name="btn_off_desc">Turn off flashlight</string>
+
+    <string name="sec_profiles">PROFILES</string>
+    <string name="prof_none">No profiles yet. Create one to change the presses in specific apps.</string>
+    <string name="prof_new">NEW PROFILE</string>
+    <string name="prof_default_name">Profile %1$d</string>
+    <string name="prof_hint">If several profiles match an app, the one higher in the list wins. Everywhere else the general presses apply.</string>
+    <string name="prof_mode">WHERE IT APPLIES</string>
+    <string name="prof_mode_only">ONLY SELECTED</string>
+    <string name="prof_mode_except">ALL EXCEPT</string>
+    <string name="prof_sub_only">Only in: %1$s</string>
+    <string name="prof_sub_except">All except: %1$s</string>
+    <string name="prof_no_apps">no apps yet</string>
+    <string name="prof_off_tag">OFF</string>
+    <string name="prof_enabled">Profile active</string>
+    <string name="prof_name">NAME</string>
+    <string name="prof_name_title">Profile name</string>
+    <string name="prof_apps">APPS</string>
+    <string name="prof_apps_tap">Tap to choose apps  ›</string>
+    <string name="prof_presses">PRESSES IN THIS PROFILE</string>
+    <string name="prof_inherit">General setting</string>
+    <string name="prof_inherit_val">General · %1$s</string>
+    <string name="prof_pick_action">Action for this press</string>
+    <string name="prof_priority">PRIORITY</string>
+    <string name="prof_prio_pos">#%1$d of %2$d</string>
+    <string name="prof_up">▲ HIGHER</string>
+    <string name="prof_down">▼ LOWER</string>
+    <string name="prof_delete">DELETE PROFILE</string>
+    <string name="prof_delete_q">Delete “%1$s”? The general presses are not affected.</string>
+    <string name="prof_pick_apps">Choose apps</string>
+    <string name="picker_search">Search apps</string>
+    <string name="picker_done">DONE</string>
+    <string name="picker_count">Selected: %1$d</string>
+    <string name="excl_title">EXCLUDED APPS</string>
+    <string name="excl_sub">Joyous Remap does nothing there</string>
+    <string name="excl_desc">In these apps Joyous Remap runs no action and lets the key through to the system. If you disabled Essential Space, it is not restored by this.</string>
+    <string name="excl_none">No excluded apps  ›</string>
+    <string name="excl_pick">Choose apps to exclude</string>
+    <plurals name="n_apps">
+        <item quantity="one">%d app</item>
+        <item quantity="other">%d apps</item>
+    </plurals>
+    <string name="prof_mode_only_d">The profile works only in the apps you pick.</string>
+    <string name="prof_mode_except_d">The profile works in every app except the ones you pick.</string>
 </resources>

@@ -61,6 +61,41 @@ class KeyService : AccessibilityService() {
     private var torchOn = false
     private var fgPkg: String? = null
 
+    // Perfil aplicable a la secuencia de pulsaciones en curso (se decide al empezar cada una).
+    private var eff: Eff = Eff.NONE
+
+    private fun act(g: Gesture): Act = eff.act(this, g)
+
+    // Teclados: sus ventanas no cuentan como "app en primer plano".
+    private var imePkgs: Set<String> = emptySet()
+    private var imeAt = 0L
+
+    private fun isIgnoredPkg(p: String): Boolean {
+        if (p == packageName || p == "com.android.systemui") return true
+        val now = System.currentTimeMillis()
+        if (now - imeAt > 600_000L) {
+            imeAt = now
+            imePkgs = try {
+                getSystemService(android.view.inputmethod.InputMethodManager::class.java)
+                    .inputMethodList.map { it.packageName }.toSet()
+            } catch (e: Throwable) {
+                emptySet()
+            }
+        }
+        return p in imePkgs
+    }
+
+    /**
+     * App en primer plano: la ventana activa en este momento; si es nuestra, el teclado o la barra
+     * del sistema, la última app real vista. Solo se consulta al pulsar, no hay trabajo en reposo.
+     */
+    private fun foregroundPkg(): String? {
+        val root = try { rootInActiveWindow?.packageName?.toString() } catch (e: Throwable) { null }
+        if (root == packageName) return root
+        if (root != null && !isIgnoredPkg(root)) return root
+        return fgPkg
+    }
+
     // Estado de pulsaciones
     private var taps = 0
     private var longFired = false
@@ -81,7 +116,13 @@ class KeyService : AccessibilityService() {
     override fun onKeyEvent(event: KeyEvent): Boolean {
         // La tecla Essential llega como KEYCODE_UNKNOWN (0).
         if (event.keyCode != KeyEvent.KEYCODE_UNKNOWN) return false
-        if (Gesture.values().all { Prefs.action(this, it) == Act.NONE }) return false
+        // Al empezar una pulsación nueva se elige perfil según la app de delante.
+        if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0 && taps == 0) {
+            eff = if (Profiles.any(this)) Profiles.resolve(this, foregroundPkg()) else Eff.NONE
+        }
+        // App excluida: Joyous Remap no hace nada y la tecla sigue su camino normal.
+        if (eff.excluded) return false
+        if (Gesture.values().all { act(it) == Act.NONE }) return false
 
         // Ya dentro de la cámara: cada pulsación hace una foto al instante y sin avisos.
         if (cameraMode()) {
@@ -103,7 +144,7 @@ class KeyService : AccessibilityService() {
                 if (event.repeatCount > 0) return true
                 longFired = false
                 if (sawUp) {
-                    if (Prefs.action(this, Gesture.LONG) != Act.NONE) {
+                    if (act(Gesture.LONG) != Act.NONE) {
                         handler.postDelayed(longRun, Prefs.longMs(this).toLong())
                     }
                 } else {
@@ -124,8 +165,8 @@ class KeyService : AccessibilityService() {
     }
 
     private fun maxTaps(): Int = when {
-        Prefs.action(this, Gesture.TRIPLE) != Act.NONE -> 3
-        Prefs.action(this, Gesture.DOUBLE) != Act.NONE -> 2
+        act(Gesture.TRIPLE) != Act.NONE -> 3
+        act(Gesture.DOUBLE) != Act.NONE -> 2
         else -> 1
     }
 
@@ -157,10 +198,10 @@ class KeyService : AccessibilityService() {
     }
 
     private fun run(g: Gesture) {
-        val act = Prefs.action(this, g)
-        if (act == Act.NONE) return
+        val a = act(g)
+        if (a == Act.NONE) return
         if (Prefs.haptic(this)) buzz()
-        execute(act, Prefs.pkg(this, g))
+        execute(a, eff.pkg(this, g))
     }
 
     private fun buzz() {
@@ -368,7 +409,7 @@ class KeyService : AccessibilityService() {
     }
 
     private fun cameraMode(): Boolean =
-        Gesture.values().any { Prefs.action(this, it) == Act.CAMERA } && isCameraForeground()
+        Gesture.values().any { act(it) == Act.CAMERA } && isCameraForeground()
 
     private fun cameraAction() {
         if (isCameraForeground()) {
@@ -533,7 +574,7 @@ class KeyService : AccessibilityService() {
         if (event == null) return
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             val p = event.packageName?.toString() ?: return
-            if (p != packageName && p != "com.android.systemui") fgPkg = p
+            if (!isIgnoredPkg(p)) fgPkg = p
         }
     }
 

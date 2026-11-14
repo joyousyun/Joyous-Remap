@@ -30,6 +30,9 @@ class DotIconView(ctx: Context, private val rows: List<String>, var lit: Int) : 
         val PANEL = listOf("1.1.1", ".111.", "11111", ".111.", "1.1.1")
         val TIMING = listOf(".111.", "1.1.1", "1.111", "1...1", ".111.")
         val MORE = listOf("..1..", ".....", "..1..", ".....", "..1..")
+        val PROFILE = listOf("11.11", "11.11", ".....", "11.11", "11.11")
+        val EXCLUDE = listOf("1...1", ".1.1.", "..1..", ".1.1.", "1...1")
+        val PLUS = listOf("..1..", "..1..", "11111", "..1..", "..1..")
         val BACK = listOf("..1..", ".1...", "1....", ".1...", "..1..")
     }
 }
