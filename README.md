@@ -7,6 +7,11 @@ flashlight with a side brightness panel, QR scanner, Google Wallet, voice record
 auto-rotate, Do Not Disturb, screenshot, Wi-Fi/Bluetooth, Wi-Fi settings and assistant.
 The on-screen notice, the glowing screen edge and the flashlight panel are customizable. English and Spanish.
 
+Also: **per-app profiles** (different presses in the apps you choose, with priorities and an excluded-apps list),
+a floating **Quick Menu** of 2-6 shortcuts next to the key (general or per profile), and optional **screen-off music
+controls** that use Android's media sessions (they only work on phones that deliver the key with the screen off;
+the app includes a test for that).
+
 The app has **no Internet permission**. It detects the key with an accessibility service.
 
 ## Install
