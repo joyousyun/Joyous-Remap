@@ -93,7 +93,8 @@ class DeviceView(ctx: Context) : View(ctx) {
         val body = 0xFF141519.toInt(); val edge = 0xFF50555E.toInt(); val dim = 0xFF262A30.toInt()
         val lite = false
 
-        fill(body); rrect(c, 0f, 0f, 1f, 1f, 0.14f)
+        val cr = if (m == NothingModel.CMF2PRO) 0.075f else 0.14f
+        fill(body); rrect(c, 0f, 0f, 1f, 1f, cr)
 
         when (m) {
             NothingModel.P3A, NothingModel.P3A_PRO -> drawA(c, m == NothingModel.P3A_PRO, dim)
@@ -109,7 +110,7 @@ class DeviceView(ctx: Context) : View(ctx) {
         }
 
         // Contorno
-        line(edge, 0.016f); rrect(c, 0f, 0f, 1f, 1f, 0.14f, true)
+        line(edge, 0.016f); rrect(c, 0f, 0f, 1f, 1f, cr, true)
 
         // Tecla Essential: vista trasera, así que el lateral izquierdo (de frente) queda a la derecha.
         val kh = W(0.13f)
@@ -253,18 +254,37 @@ class DeviceView(ctx: Context) : View(ctx) {
         line(0xFF2A2D33.toInt(), 0.012f); circleS(c, 0.134f, 0.935f, 0.082f)
     }
 
-    /** CMF Phone 2 Pro: dos lentes grandes con aro metálico, flash lateral y panel inferior con el dial rojo. */
+    /** CMF Phone 2 Pro: dos lentes grandes con aro metálico, módulo plateado con flash y panel inferior con el dial rojo. */
     private fun drawCmf(c: Canvas) {
-        val metal = 0xFF9A9EA4.toInt()
-        fill(0xFF1B1D21.toInt()); rrect(c, 0.02f, 0.515f, 0.98f, 0.985f, 0.09f)
+        val metal = 0xFFB4B8BD.toInt()
+        // panel inferior
+        fill(0xFF1B1D21.toInt()); r.set(X(0f), Y(0.5f), X(1f), Y(0.6f)); c.drawRect(r, p)
+        rrect(c, 0f, 0.5f, 1f, 1f, 0.075f)
         line(0xFF2E3238.toInt(), 0.012f); p.style = Paint.Style.STROKE
-        c.drawLine(X(0.02f), Y(0.51f), X(0.98f), Y(0.51f), p)
-        fill(0xFF8E9298.toInt()); rrect(c, 0.31f, 0.095f, 0.405f, 0.19f, 0.045f)
-        fill(0xFFE8E0C8.toInt()); circle(c, 0.357f, 0.158f, 0.02f)
-        lens(c, 0.157f, 0.07f, 0.125f, metal); lens(c, 0.137f, 0.19f, 0.125f, metal); lens(c, 0.357f, 0.074f, 0.068f, metal)
-        screws(c, listOf(0.357f to 0.014f, 0.035f to 0.294f, 0.95f to 0.29f, 0.05f to 0.91f), 0.016f)
-        fill(RED); circle(c, 0.89f, 0.91f, 0.11f)
-        fill(0xFF8F1A20.toInt()); circle(c, 0.89f, 0.91f, 0.072f)
-        label(c, 0.12f, 0.80f, 0xFF6E727A.toInt(), "CMF")
+        c.drawLine(X(0f), Y(0.5f), X(1f), Y(0.5f), p)
+        // módulo plateado (lente pequeña + flash)
+        fill(0xFF8E9298.toInt()); rrect(c, 0.296f, 0.069f, 0.432f, 0.193f, 0.068f)
+        ringLens(c, 0.364f, 0.096f, 0.073f, metal)
+        fill(0xFFE8E0C8.toInt()); circle(c, 0.361f, 0.164f, 0.034f)
+        fill(0xFFB4A78A.toInt()); circle(c, 0.361f, 0.164f, 0.02f)
+        // lentes grandes
+        ringLens(c, 0.147f, 0.064f, 0.11f, metal)
+        ringLens(c, 0.139f, 0.194f, 0.105f, metal)
+        screws(c, listOf(0.359f to 0.021f, 0.055f to 0.288f, 0.945f to 0.29f, 0.05f to 0.89f), 0.018f)
+        // dial rojo, pegado a la esquina inferior derecha
+        fill(RED); circle(c, 0.864f, 0.939f, 0.126f)
+        fill(0xFF9A1C22.toInt()); circleS(c, 0.864f, 0.939f, 0.11f)
+        // marca
+        p.style = Paint.Style.FILL; p.color = 0xFF8A8E96.toInt(); p.textAlign = Paint.Align.LEFT
+        p.typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
+        p.textSize = W(0.1f); c.drawText("cmf", X(0.1f), Y(0.755f), p)
+        p.textSize = W(0.05f); c.drawText("by NOTHING", X(0.1f), Y(0.785f), p)
+    }
+
+    private fun ringLens(c: Canvas, cx: Float, cy: Float, rad: Float, ring: Int) {
+        fill(ring); circle(c, cx, cy, rad)
+        fill(0xFF050505.toInt()); circle(c, cx, cy, rad * 0.66f)
+        fill(0xFF26324D.toInt()); circle(c, cx, cy, rad * 0.36f)
+        fill(0x66FFFFFF); circle(c, cx - rad * 0.12f, cy - rad * 0.1f * w / h, rad * 0.1f)
     }
 }
