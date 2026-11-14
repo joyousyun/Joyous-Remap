@@ -157,17 +157,23 @@ class MainActivity : Activity() {
             }
             else -> if (page!!.startsWith("prof:") || page == "excl") buildProfilePage(c) else {
                 c.addView(pageHeader(when (page) {
+                    "quick" -> DotIconView.QUICK
                     "look" -> DotIconView.LOOK
                     "panel" -> DotIconView.PANEL
                     "timing" -> DotIconView.TIMING
                     else -> DotIconView.MORE
                 }, when (page) {
+                    "quick" -> R.string.menu_quick
                     "look" -> R.string.menu_look
                     "panel" -> R.string.menu_panel
                     "timing" -> R.string.menu_timing
                     else -> R.string.menu_more
                 }))
                 when (page) {
+                    "quick" -> {
+                        c.addView(sectionTitle(R.string.sec_quick_items)); c.addView(quickItemsCard())
+                        c.addView(sectionTitle(R.string.sec_quick_look)); c.addView(quickLookCard())
+                    }
                     "look" -> {
                         c.addView(sectionTitle(R.string.sec_notice)); c.addView(noticeCard())
                         c.addView(sectionTitle(R.string.sec_edge)); c.addView(lookCard())
@@ -258,6 +264,8 @@ class MainActivity : Activity() {
     private fun menuCard(): View {
         val box = cardBox()
         (box.layoutParams as LinearLayout.LayoutParams).topMargin = px(20)
+        box.addView(menuRow(DotIconView.QUICK, R.string.menu_quick, R.string.menu_quick_sub, "quick"))
+        box.addView(divider())
         box.addView(menuRow(DotIconView.LOOK, R.string.menu_look, R.string.menu_look_sub, "look"))
         box.addView(divider())
         box.addView(menuRow(DotIconView.PANEL, R.string.menu_panel, R.string.menu_panel_sub, "panel"))
@@ -467,8 +475,10 @@ class MainActivity : Activity() {
      * Selector de acciones único: lo usan las pulsaciones generales y los perfiles.
      * Con [inherit] se añade arriba "Ajuste general" y devuelve (null, null).
      */
-    private fun chooseAction(title: Int, inherit: Boolean, onChosen: (Act?, String?) -> Unit) {
-        val acts = Act.values()
+    private fun chooseAction(
+        title: Int, inherit: Boolean, exclude: Set<Act> = emptySet(), onChosen: (Act?, String?) -> Unit
+    ) {
+        val acts = Act.values().filter { it !in exclude }.toTypedArray()
         val labels = (if (inherit) listOf(getString(R.string.prof_inherit)) else emptyList()) +
             acts.map { getString(it.label) }
         darkDialog()
@@ -920,6 +930,102 @@ class MainActivity : Activity() {
         }.start()
     }
 
+    // ---------- Menú rápido ----------
+
+    private fun quickItemsCard(): View {
+        val box = cardBox()
+        box.addView(mono(TextView(this), 10f, grey).apply {
+            text = getString(R.string.quick_desc)
+            setPadding(0, px(4), 0, px(8))
+        })
+        quickEditor(box, Prefs.quickItems(this)) { Prefs.setQuickItems(this, it); rebuild() }
+        return box
+    }
+
+    /** Icono de un acceso: el de la app si es "abrir app", si no el de puntos. */
+    private fun accessIcon(pa: ProfileAct, size: Int): View {
+        if (pa.act == Act.APP && pa.pkg != null) {
+            val dr = appIcon(pa.pkg)
+            if (dr != null) return android.widget.ImageView(this).apply {
+                setImageDrawable(dr)
+                layoutParams = LinearLayout.LayoutParams(px(size), px(size)).apply { rightMargin = px(14) }
+            }
+        }
+        return icon(DotIconView.forAct(pa.act), size, Prefs.quickColor(this))
+    }
+
+    /** Lista editable de accesos (2 a 6): reordenar, quitar y añadir con el selector de acciones de siempre. */
+    private fun quickEditor(box: LinearLayout, items: List<ProfileAct>, onChange: (List<ProfileAct>) -> Unit) {
+        items.forEachIndexed { i, pa ->
+            val row = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding(0, px(6), 0, px(6))
+            }
+            row.addView(accessIcon(pa, 28))
+            row.addView(mono(TextView(this), 13f, Color.WHITE).apply {
+                text = quickLabel(this@MainActivity, pa)
+                setSingleLine()
+                ellipsize = android.text.TextUtils.TruncateAt.END
+            }, lp(0, -2, 1f))
+            fun btn(t: String, on: Boolean, f: () -> Unit) = mono(TextView(this), 15f, grey, true).apply {
+                text = t
+                alpha = if (on) 1f else 0.25f
+                setPadding(px(12), px(6), px(6), px(6))
+                if (on) setOnClickListener { f() }
+            }
+            row.addView(btn("▲", i > 0) {
+                onChange(items.toMutableList().also { val t = it[i]; it[i] = it[i - 1]; it[i - 1] = t })
+            })
+            row.addView(btn("▼", i < items.size - 1) {
+                onChange(items.toMutableList().also { val t = it[i]; it[i] = it[i + 1]; it[i + 1] = t })
+            })
+            row.addView(btn("✕", items.size > 2) { onChange(items.filterIndexed { j, _ -> j != i }) })
+            box.addView(row)
+        }
+        if (items.size < 6) {
+            box.addView(pill(getString(R.string.quick_add), true) {
+                chooseAction(R.string.quick_pick, false, setOf(Act.NONE, Act.QUICK)) { a, pkg ->
+                    if (a != null) onChange(items + ProfileAct(a, pkg))
+                }
+            }, lp(-1, px(44)).apply { topMargin = px(10) })
+        }
+    }
+
+    private fun quickLookCard(): View {
+        val box = cardBox()
+        box.addView(segmented(
+            listOf(getString(R.string.quick_bar), getString(R.string.quick_panel)),
+            if (Prefs.quickStyle(this) == "panel") 1 else 0
+        ) { i -> Prefs.setQuickStyle(this, if (i == 1) "panel" else "bar"); rebuild() }, lp(-1, px(38)))
+        box.addView(toggle(R.string.quick_names, Prefs.quickNames(this)) { Prefs.setQuickNames(this, it) })
+        box.addView(divider())
+        box.addView(colorRow(R.string.quick_color, Prefs.quickColor(this)) { Prefs.setQuickColor(this, it) })
+        box.addView(divider())
+        box.addView(pickerRow(R.string.quick_fx, getString(Prefs.quickFx(this).label)) {
+            val all = PanelFx.values()
+            darkDialog()
+                .setTitle(R.string.pick_fx)
+                .setItems(all.map { getString(it.label) }.toTypedArray()) { _, i ->
+                    Prefs.setQuickFx(this, all[i]); rebuild()
+                }.show()
+        })
+        box.addView(slider(70, 150, Prefs.quickSize(this), { getString(R.string.quick_size, it) }) {
+            Prefs.setQuickSize(this, it)
+        })
+        box.addView(slider(5, 95, Prefs.quickY(this), { getString(R.string.quick_y, it) }) {
+            Prefs.setQuickY(this, it)
+        })
+        if (Prefs.quickYCustom(this)) {
+            box.addView(mono(TextView(this), 10f, accent, true).apply {
+                text = getString(R.string.quick_y_follow)
+                setPadding(0, px(12), 0, px(4))
+                setOnClickListener { Prefs.resetQuickY(this@MainActivity); rebuild() }
+            })
+        }
+        return box
+    }
+
     // ---------- Perfiles por aplicación ----------
 
     private val iconCache = java.util.concurrent.ConcurrentHashMap<String, android.graphics.drawable.Drawable>()
@@ -1155,6 +1261,27 @@ class MainActivity : Activity() {
             if (i < gAll.size - 1) gs.addView(divider())
         }
         c.addView(gs)
+
+        // Menú rápido propio del perfil (solo si lo usa alguna pulsación o ya tiene accesos propios)
+        val usesQuick = gAll.any { (p.acts[it]?.act ?: Prefs.action(this, it)) == Act.QUICK }
+        if (usesQuick || p.quick != null) {
+            c.addView(sectionTitle(R.string.menu_quick))
+            val qb = cardBox()
+            qb.addView(toggle(R.string.quick_own, p.quick != null) { on ->
+                Profiles.update(this, p.id) { it.copy(quick = if (on) Prefs.quickItems(this) else null) }
+            })
+            val own = p.quick
+            if (own != null) {
+                qb.addView(divider())
+                quickEditor(qb, own) { l -> Profiles.update(this, p.id) { it.copy(quick = l) }; rebuild() }
+            } else {
+                qb.addView(mono(TextView(this), 10f, grey).apply {
+                    text = getString(R.string.quick_own_hint)
+                    setPadding(0, px(2), 0, px(6))
+                })
+            }
+            c.addView(qb)
+        }
 
         c.addView(pill(getString(R.string.prof_delete), false) {
             darkDialog()

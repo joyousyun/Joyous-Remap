@@ -77,6 +77,7 @@ enum class ChipFx(val id: String, val label: Int) {
 
 enum class Act(val id: String, val label: Int) {
     NONE("none", R.string.act_none),
+    QUICK("quick", R.string.act_quick),
     APP("app", R.string.act_app),
     CAMERA("camera", R.string.act_camera),
     TORCH("torch", R.string.act_torch),
@@ -267,6 +268,44 @@ object Prefs {
 
     fun chipY(c: Context) = sp(c).getInt("chip_y", 5)
     fun setChipY(c: Context, v: Int) = sp(c).edit().putInt("chip_y", v).apply()
+
+    // Menú rápido (apariencia común; los accesos pueden ser propios de cada perfil)
+    fun quickStyle(c: Context) = sp(c).getString("quick_style", "bar") ?: "bar"
+    fun setQuickStyle(c: Context, v: String) = sp(c).edit().putString("quick_style", v).apply()
+
+    fun quickNames(c: Context) = sp(c).getBoolean("quick_names", true)
+    fun setQuickNames(c: Context, v: Boolean) = sp(c).edit().putBoolean("quick_names", v).apply()
+
+    fun quickColor(c: Context) = sp(c).getInt("quick_color", 0xFFD71921.toInt())
+    fun setQuickColor(c: Context, v: Int) = sp(c).edit().putInt("quick_color", v).apply()
+
+    fun quickFx(c: Context): PanelFx = PanelFx.from(sp(c).getString("quick_fx", null))
+    fun setQuickFx(c: Context, v: PanelFx) = sp(c).edit().putString("quick_fx", v.id).apply()
+
+    fun quickSize(c: Context) = sp(c).getInt("quick_size", 100)
+    fun setQuickSize(c: Context, v: Int) = sp(c).edit().putInt("quick_size", v).apply()
+
+    /** Altura del menú rápido: si no se ha tocado, sigue a la tecla Essential. */
+    fun quickY(c: Context) = sp(c).getInt("quick_y", keyY(c))
+    fun quickYCustom(c: Context) = sp(c).contains("quick_y")
+    fun setQuickY(c: Context, v: Int) = sp(c).edit().putInt("quick_y", v).apply()
+    fun resetQuickY(c: Context) = sp(c).edit().remove("quick_y").apply()
+
+    val QUICK_DEFAULT = listOf(
+        ProfileAct(Act.TORCH), ProfileAct(Act.CAMERA), ProfileAct(Act.QR), ProfileAct(Act.MUSIC)
+    )
+
+    fun quickItems(c: Context): List<ProfileAct> {
+        val raw = sp(c).getString("quick_items", null) ?: return QUICK_DEFAULT
+        return try {
+            Profiles.decodeItems(org.json.JSONArray(raw))?.takeIf { it.size >= 2 } ?: QUICK_DEFAULT
+        } catch (e: Exception) {
+            QUICK_DEFAULT
+        }
+    }
+
+    fun setQuickItems(c: Context, l: List<ProfileAct>) =
+        sp(c).edit().putString("quick_items", Profiles.encodeItems(l).toString()).apply()
 
     fun chipFx(c: Context): ChipFx = ChipFx.from(sp(c).getString("chip_fx", null))
     fun setChipFx(c: Context, v: ChipFx) = sp(c).edit().putString("chip_fx", v.id).apply()

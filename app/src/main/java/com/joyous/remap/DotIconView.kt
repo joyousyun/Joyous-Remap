@@ -33,6 +33,30 @@ class DotIconView(ctx: Context, private val rows: List<String>, var lit: Int) : 
         val PROFILE = listOf("11.11", "11.11", ".....", "11.11", "11.11")
         val EXCLUDE = listOf("1...1", ".1.1.", "..1..", ".1.1.", "1...1")
         val PLUS = listOf("..1..", "..1..", "11111", "..1..", "..1..")
+        val QUICK = listOf("11.11", ".....", "..1..", ".....", "11.11")
+
+        /** Icono de puntos de cada acción (para el menú rápido). */
+        fun forAct(a: Act): List<String> = when (a) {
+            Act.CAMERA -> listOf("..11.", "11111", "1...1", "1.1.1", "11111")
+            Act.TORCH -> listOf("11111", ".111.", ".111.", "..1..", "..1..")
+            Act.QR -> listOf("11.11", "11.11", ".....", "1.11.", "..1.1")
+            Act.WALLET -> listOf("11111", "1...1", "1..11", "1...1", "11111")
+            Act.RECORDER -> listOf(".111.", ".111.", "1.1.1", ".111.", "..1..")
+            Act.SOUND -> listOf("..1.1", ".11.1", "111.1", ".11.1", "..1.1")
+            Act.MUSIC -> listOf("1....", "111..", "1111.", "111..", "1....")
+            Act.MUSIC_NEXT -> listOf("1...1", "11..1", "111.1", "11..1", "1...1")
+            Act.MUSIC_PREV -> listOf("1...1", "1..11", "1.111", "1..11", "1...1")
+            Act.ROTATION -> listOf(".111.", "1...1", "1..11", "1...1", ".1.1.")
+            Act.DND -> listOf(".111.", "1...1", "11111", "1...1", ".111.")
+            Act.SCREENSHOT -> listOf("11.11", "1...1", ".....", "1...1", "11.11")
+            Act.WIFI_BT -> listOf(".111.", "1...1", "..1..", ".....", "..1..")
+            Act.WIFI_SHARE -> listOf("11111", "1...1", "..1..", ".....", "..1..")
+            Act.ASSISTANT -> listOf("..1..", ".111.", "11111", ".111.", "..1..")
+            Act.APP -> PROFILE
+            Act.QUICK -> QUICK
+            Act.NONE -> listOf(".....", ".....", ".....", ".....", ".....")
+        }
+
         val BACK = listOf("..1..", ".1...", "1....", ".1...", "..1..")
     }
 }

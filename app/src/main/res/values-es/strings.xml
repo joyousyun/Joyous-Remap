@@ -243,4 +243,39 @@
     </plurals>
     <string name="prof_mode_only_d">El perfil solo funciona en las apps que elijas.</string>
     <string name="prof_mode_except_d">El perfil funciona en todas las apps menos en las que elijas.</string>
+
+    <string name="act_quick">Menú rápido</string>
+    <string name="lbl_quick_setup">Configura el menú rápido en la app</string>
+    <string name="menu_quick">Menú rápido</string>
+    <string name="menu_quick_sub">Accesos junto a la tecla</string>
+    <string name="sec_quick_items">ACCESOS (2–6)</string>
+    <string name="sec_quick_look">APARIENCIA</string>
+    <string name="quick_desc">Un panel flotante junto a la tecla Essential. Asigna «Menú rápido» a cualquier pulsación, o a una pulsación de un perfil.</string>
+    <string name="quick_add">AÑADIR ACCESO</string>
+    <string name="quick_pick">Elige el acceso</string>
+    <string name="quick_bar">BARRA</string>
+    <string name="quick_panel">PANEL</string>
+    <string name="quick_names">Mostrar nombres</string>
+    <string name="quick_color">Color de acento</string>
+    <string name="quick_fx">Efecto de entrada</string>
+    <string name="quick_size">TAMAÑO: %1$d%%</string>
+    <string name="quick_y">POSICIÓN: %1$d%%</string>
+    <string name="quick_y_follow">↺ SEGUIR A LA TECLA</string>
+    <string name="quick_own">Accesos propios en este perfil</string>
+    <string name="quick_own_hint">Sin esto, se usa el menú rápido general.</string>
+    <string name="q_camera">Cámara</string>
+    <string name="q_torch">Linterna</string>
+    <string name="q_qr">Escanear QR</string>
+    <string name="q_wallet">Wallet</string>
+    <string name="q_recorder">Grabadora</string>
+    <string name="q_sound">Modo de sonido</string>
+    <string name="q_music">Play / pausa</string>
+    <string name="q_next">Siguiente canción</string>
+    <string name="q_prev">Canción anterior</string>
+    <string name="q_rotation">Giro automático</string>
+    <string name="q_dnd">No molestar</string>
+    <string name="q_screenshot">Captura</string>
+    <string name="q_wifi_bt">Wi-Fi + Bluetooth</string>
+    <string name="q_wifi_share">Compartir Wi-Fi</string>
+    <string name="q_assistant">Asistente</string>
 </resources>

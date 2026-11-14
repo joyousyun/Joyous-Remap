@@ -17,7 +17,9 @@ data class Profile(
     val enabled: Boolean = true,
     val except: Boolean = false,
     val pkgs: List<String> = emptyList(),
-    val acts: Map<Gesture, ProfileAct> = emptyMap()
+    val acts: Map<Gesture, ProfileAct> = emptyMap(),
+    /** Accesos propios del menú rápido; null = usa los generales. */
+    val quick: List<ProfileAct>? = null
 ) {
     fun appliesTo(pkg: String): Boolean = if (except) pkg !in pkgs else pkg in pkgs
 }
@@ -30,6 +32,9 @@ class Eff(val excluded: Boolean, val profile: Profile?) {
         val pa = profile?.acts?.get(g)
         return if (pa != null) pa.pkg else Prefs.pkg(c, g)
     }
+
+    /** Accesos del menú rápido: los del perfil si los tiene, si no los generales. */
+    fun quick(c: Context): List<ProfileAct> = profile?.quick?.takeIf { it.size >= 2 } ?: Prefs.quickItems(c)
 
     companion object {
         val NONE = Eff(false, null)
@@ -131,6 +136,26 @@ object Profiles {
 
     // ----- JSON -----
 
+    fun encodeItems(l: List<ProfileAct>): JSONArray {
+        val a = JSONArray()
+        l.forEach { pa ->
+            val x = JSONObject().put("a", pa.act.id)
+            if (pa.pkg != null) x.put("p", pa.pkg)
+            a.put(x)
+        }
+        return a
+    }
+
+    fun decodeItems(a: JSONArray?): List<ProfileAct>? {
+        if (a == null) return null
+        return (0 until a.length()).mapNotNull {
+            val x = a.optJSONObject(it) ?: return@mapNotNull null
+            val act = Act.from(x.optString("a", "none"))
+            if (act == Act.NONE || act == Act.QUICK) null
+            else ProfileAct(act, x.optString("p", "").ifEmpty { null })
+        }
+    }
+
     private fun toJson(p: Profile): JSONObject {
         val o = JSONObject()
         o.put("id", p.id).put("name", p.name).put("on", p.enabled).put("except", p.except)
@@ -142,6 +167,7 @@ object Profiles {
             a.put(g.key, x)
         }
         o.put("acts", a)
+        p.quick?.let { o.put("quick", encodeItems(it)) }
         return o
     }
 
@@ -156,6 +182,6 @@ object Profiles {
             val x = a.optJSONObject(g.key) ?: continue
             acts[g] = ProfileAct(Act.from(x.optString("a", "none")), x.optString("p", "").ifEmpty { null })
         }
-        return Profile(id, o.optString("name", ""), o.optBoolean("on", true), o.optBoolean("except", false), pkgs, acts)
+        return Profile(id, o.optString("name", ""), o.optBoolean("on", true), o.optBoolean("except", false), pkgs, acts, decodeItems(o.optJSONArray("quick")))
     }
 }

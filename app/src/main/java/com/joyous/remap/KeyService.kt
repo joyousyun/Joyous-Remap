@@ -53,6 +53,7 @@ class KeyService : AccessibilityService() {
 
     private lateinit var overlay: Overlay
     private lateinit var panel: TorchPanel
+    private lateinit var quick: QuickMenu
     private lateinit var cm: CameraManager
     private val handler = Handler(Looper.getMainLooper())
 
@@ -107,6 +108,10 @@ class KeyService : AccessibilityService() {
         DeviceProfile.autoApply(this)
         overlay = Overlay(this)
         panel = TorchPanel(this)
+        quick = QuickMenu(this) { a, p ->
+            if (Prefs.haptic(this)) buzz()
+            execute(a, p)
+        }
         cm = getSystemService(CameraManager::class.java)
         initTorch()
     }
@@ -114,6 +119,11 @@ class KeyService : AccessibilityService() {
     // ---------- Detección de pulsaciones ----------
 
     override fun onKeyEvent(event: KeyEvent): Boolean {
+        // Con el menú rápido abierto, Atrás lo cierra en vez de actuar sobre la app de debajo.
+        if (event.keyCode == KeyEvent.KEYCODE_BACK && ::quick.isInitialized && quick.showing) {
+            if (event.action == KeyEvent.ACTION_UP) quick.hide()
+            return true
+        }
         // La tecla Essential llega como KEYCODE_UNKNOWN (0).
         if (event.keyCode != KeyEvent.KEYCODE_UNKNOWN) return false
         // Al empezar una pulsación nueva se elige perfil según la app de delante.
@@ -200,6 +210,8 @@ class KeyService : AccessibilityService() {
     private fun run(g: Gesture) {
         val a = act(g)
         if (a == Act.NONE) return
+        // Otra acción mientras el menú está abierto: se cierra antes.
+        if (a != Act.QUICK && quick.showing) quick.hide()
         if (Prefs.haptic(this)) buzz()
         execute(a, eff.pkg(this, g))
     }
@@ -232,6 +244,7 @@ class KeyService : AccessibilityService() {
     private fun execute(act: Act, pkg: String?) {
         when (act) {
             Act.NONE -> {}
+            Act.QUICK -> toggleQuick()
             Act.APP -> launchApp(pkg)
             Act.CAMERA -> cameraAction()
             Act.TORCH -> toggleTorch()
@@ -252,6 +265,21 @@ class KeyService : AccessibilityService() {
             }
             Act.ASSISTANT -> openAssistant()
         }
+    }
+
+    /** Abre el menú rápido (o lo cierra si ya estaba abierto) con los accesos del perfil activo. */
+    private fun toggleQuick() {
+        if (quick.showing) {
+            quick.hide()
+            return
+        }
+        val items = eff.quick(this)
+        if (items.size < 2) {
+            flash(R.string.lbl_quick_setup)
+            return
+        }
+        panel.hide(false)
+        quick.show(items)
     }
 
     /** Deja que el aviso se dibuje unos fotogramas antes de lanzar la app. */
@@ -575,7 +603,11 @@ class KeyService : AccessibilityService() {
         if (event == null) return
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             val p = event.packageName?.toString() ?: return
-            if (!isIgnoredPkg(p)) fgPkg = p
+            if (!isIgnoredPkg(p)) {
+                fgPkg = p
+                // Cambio real de app (p. ej. atrás con gesto): el menú se va, salvo en su arranque.
+                if (::quick.isInitialized && quick.showing && quick.age() > 700) quick.hide()
+            }
         }
     }
 
@@ -585,6 +617,7 @@ class KeyService : AccessibilityService() {
         handler.removeCallbacksAndMessages(null)
         if (::overlay.isInitialized) overlay.remove()
         if (::panel.isInitialized) panel.hide(false)
+        if (::quick.isInitialized) quick.hide(false)
         super.onDestroy()
     }
 }

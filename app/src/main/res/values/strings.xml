@@ -243,4 +243,39 @@
     </plurals>
     <string name="prof_mode_only_d">The profile works only in the apps you pick.</string>
     <string name="prof_mode_except_d">The profile works in every app except the ones you pick.</string>
+
+    <string name="act_quick">Quick Menu</string>
+    <string name="lbl_quick_setup">Set up the Quick Menu in the app</string>
+    <string name="menu_quick">Quick Menu</string>
+    <string name="menu_quick_sub">Shortcuts next to the key</string>
+    <string name="sec_quick_items">SHORTCUTS (2–6)</string>
+    <string name="sec_quick_look">APPEARANCE</string>
+    <string name="quick_desc">A floating panel next to the Essential key. Assign “Quick Menu” to any press, or to a press in a profile.</string>
+    <string name="quick_add">ADD SHORTCUT</string>
+    <string name="quick_pick">Choose shortcut</string>
+    <string name="quick_bar">BAR</string>
+    <string name="quick_panel">PANEL</string>
+    <string name="quick_names">Show names</string>
+    <string name="quick_color">Accent color</string>
+    <string name="quick_fx">Entry effect</string>
+    <string name="quick_size">SIZE: %1$d%%</string>
+    <string name="quick_y">POSITION: %1$d%%</string>
+    <string name="quick_y_follow">↺ FOLLOW THE KEY</string>
+    <string name="quick_own">Own shortcuts in this profile</string>
+    <string name="quick_own_hint">Without this, the general Quick Menu is used.</string>
+    <string name="q_camera">Camera</string>
+    <string name="q_torch">Flashlight</string>
+    <string name="q_qr">Scan QR</string>
+    <string name="q_wallet">Wallet</string>
+    <string name="q_recorder">Recorder</string>
+    <string name="q_sound">Sound mode</string>
+    <string name="q_music">Play / pause</string>
+    <string name="q_next">Next song</string>
+    <string name="q_prev">Previous song</string>
+    <string name="q_rotation">Auto-rotate</string>
+    <string name="q_dnd">Do not disturb</string>
+    <string name="q_screenshot">Screenshot</string>
+    <string name="q_wifi_bt">Wi-Fi + Bluetooth</string>
+    <string name="q_wifi_share">Share Wi-Fi</string>
+    <string name="q_assistant">Assistant</string>
 </resources>
