@@ -17,7 +17,9 @@ enum class NothingModel(
     P3A_LITE("3a_lite", "Phone (3a) Lite", false, 59, 2, false),
     P3("3", "Phone (3)", false, 59, 3, true),
     P4A("4a", "Phone (4a)", true, 25, 2, false),
-    P4A_PRO("4a_pro", "Phone (4a) Pro", true, 29, 3, false);
+    P4A_PRO("4a_pro", "Phone (4a) Pro", true, 29, 3, false),
+    // Lateral derecho, justo debajo del botón de encendido (altura provisional).
+    CMF2PRO("cmf_2_pro", "CMF Phone 2 Pro", false, 47, 3, false);
 
     companion object {
         fun from(id: String?) = values().firstOrNull { it.id == id }
@@ -28,14 +30,16 @@ object DeviceProfile {
 
     /** Detección por Build.MANUFACTURER, Build.MODEL y Build.DEVICE. No necesita permisos. */
     fun detect(): NothingModel? {
-        if (!Build.MANUFACTURER.equals("nothing", ignoreCase = true)) return null
         val norm = { s: String -> s.lowercase().replace(Regex("[^a-z0-9]"), "") }
+        val maker = norm(Build.MANUFACTURER)
+        if (maker != "nothing" && maker != "cmf" && !norm(Build.MODEL).contains("cmf")) return null
         val m = norm(Build.MODEL)
         val dev = norm(Build.DEVICE)
         return when {
+            m.contains("cmf") && m.contains("2pro") || m == "a001" -> NothingModel.CMF2PRO
             m.contains("4apro") -> NothingModel.P4A_PRO
             m.contains("4a") -> NothingModel.P4A
-            m.contains("3alite") || m == "a001t" || m.startsWith("a001") -> NothingModel.P3A_LITE
+            m.contains("3alite") || m == "a001t" -> NothingModel.P3A_LITE
             m.contains("3apro") || m == "a059p" -> NothingModel.P3A_PRO
             m.contains("3a") || m == "a059" -> NothingModel.P3A
             m.contains("phone3") || m == "a024" || dev.contains("metroid") -> NothingModel.P3

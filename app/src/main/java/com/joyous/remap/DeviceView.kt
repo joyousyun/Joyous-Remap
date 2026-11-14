@@ -68,13 +68,13 @@ class DeviceView(ctx: Context) : View(ctx) {
         }
     }
 
-    private fun label(c: Canvas, rx: Float, ry: Float, col: Int) {
+    private fun label(c: Canvas, rx: Float, ry: Float, col: Int, text: String = "NOTHING") {
         c.save()
         c.rotate(-90f, X(rx), Y(ry))
         p.style = Paint.Style.FILL; p.color = col
         p.typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
         p.textSize = W(0.075f); p.letterSpacing = 0.12f; p.textAlign = Paint.Align.CENTER
-        c.drawText("NOTHING", X(rx), Y(ry), p)
+        c.drawText(text, X(rx), Y(ry), p)
         c.restore()
         p.letterSpacing = 0f
     }
@@ -101,6 +101,7 @@ class DeviceView(ctx: Context) : View(ctx) {
             NothingModel.P3 -> draw3(c, dim)
             NothingModel.P4A -> draw4a(c, dim)
             NothingModel.P4A_PRO -> draw4aPro(c, dim)
+            NothingModel.CMF2PRO -> drawCmf(c)
             null -> { // genérico
                 fill(dim); rrect(c, 0.1f, 0.05f, 0.6f, 0.15f, 0.05f)
                 lens(c, 0.24f, 0.10f, 0.06f, 0xFF333333.toInt()); lens(c, 0.42f, 0.10f, 0.06f, 0xFF333333.toInt())
@@ -250,5 +251,20 @@ class DeviceView(ctx: Context) : View(ctx) {
         square(c, 0.86f, 0.235f, 0.047f, RED)
         fill(0xFF2A2D33.toInt()); rrect(c, 0.60f, 0.282f, 0.80f, 0.302f, 0.01f)
         line(0xFF2A2D33.toInt(), 0.012f); circleS(c, 0.134f, 0.935f, 0.082f)
+    }
+
+    /** CMF Phone 2 Pro: dos lentes grandes con aro metálico, flash lateral y panel inferior con el dial rojo. */
+    private fun drawCmf(c: Canvas) {
+        val metal = 0xFF9A9EA4.toInt()
+        fill(0xFF1B1D21.toInt()); rrect(c, 0.02f, 0.515f, 0.98f, 0.985f, 0.09f)
+        line(0xFF2E3238.toInt(), 0.012f); p.style = Paint.Style.STROKE
+        c.drawLine(X(0.02f), Y(0.51f), X(0.98f), Y(0.51f), p)
+        fill(0xFF8E9298.toInt()); rrect(c, 0.31f, 0.095f, 0.405f, 0.19f, 0.045f)
+        fill(0xFFE8E0C8.toInt()); circle(c, 0.357f, 0.158f, 0.02f)
+        lens(c, 0.157f, 0.07f, 0.125f, metal); lens(c, 0.137f, 0.19f, 0.125f, metal); lens(c, 0.357f, 0.074f, 0.068f, metal)
+        screws(c, listOf(0.357f to 0.014f, 0.035f to 0.294f, 0.95f to 0.29f, 0.05f to 0.91f), 0.016f)
+        fill(RED); circle(c, 0.89f, 0.91f, 0.11f)
+        fill(0xFF8F1A20.toInt()); circle(c, 0.89f, 0.91f, 0.072f)
+        label(c, 0.12f, 0.80f, 0xFF6E727A.toInt(), "CMF")
     }
 }
