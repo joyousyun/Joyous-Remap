@@ -259,8 +259,8 @@
     <string name="quick_color">Color de acento</string>
     <string name="quick_fx">Efecto de entrada</string>
     <string name="quick_size">TAMAÑO: %1$d%%</string>
-    <string name="quick_y">POSICIÓN: %1$d%%</string>
-    <string name="quick_y_follow">↺ SEGUIR A LA TECLA</string>
+    <string name="quick_y">AJUSTE SOBRE LA ALTURA DE LA TECLA: %1$+d%%</string>
+    <string name="quick_y_follow">↺ ALINEAR CON LA TECLA</string>
     <string name="quick_own">Accesos propios en este perfil</string>
     <string name="quick_own_hint">Sin esto, se usa el menú rápido general.</string>
     <string name="q_camera">Cámara</string>

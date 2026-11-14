@@ -1013,14 +1013,14 @@ class MainActivity : Activity() {
         box.addView(slider(70, 150, Prefs.quickSize(this), { getString(R.string.quick_size, it) }) {
             Prefs.setQuickSize(this, it)
         })
-        box.addView(slider(5, 95, Prefs.quickY(this), { getString(R.string.quick_y, it) }) {
-            Prefs.setQuickY(this, it)
+        box.addView(slider(-30, 30, Prefs.quickDy(this), { getString(R.string.quick_y, it) }) {
+            Prefs.setQuickDy(this, it)
         })
-        if (Prefs.quickYCustom(this)) {
+        if (Prefs.quickDy(this) != 0) {
             box.addView(mono(TextView(this), 10f, accent, true).apply {
                 text = getString(R.string.quick_y_follow)
                 setPadding(0, px(12), 0, px(4))
-                setOnClickListener { Prefs.resetQuickY(this@MainActivity); rebuild() }
+                setOnClickListener { Prefs.setQuickDy(this@MainActivity, 0); rebuild() }
             })
         }
         return box

@@ -285,11 +285,12 @@ object Prefs {
     fun quickSize(c: Context) = sp(c).getInt("quick_size", 100)
     fun setQuickSize(c: Context, v: Int) = sp(c).edit().putInt("quick_size", v).apply()
 
-    /** Altura del menú rápido: si no se ha tocado, sigue a la tecla Essential. */
-    fun quickY(c: Context) = sp(c).getInt("quick_y", keyY(c))
-    fun quickYCustom(c: Context) = sp(c).contains("quick_y")
-    fun setQuickY(c: Context, v: Int) = sp(c).edit().putInt("quick_y", v).apply()
-    fun resetQuickY(c: Context) = sp(c).edit().remove("quick_y").apply()
+    /** Ajuste fino respecto a la tecla, en %: 0 = justo a su altura. */
+    fun quickDy(c: Context) = sp(c).getInt("quick_dy", 0)
+    fun setQuickDy(c: Context, v: Int) = sp(c).edit().putInt("quick_dy", v).apply()
+
+    /** Altura del menú rápido: la de la tecla Essential (key height) más el ajuste. */
+    fun quickY(c: Context) = (keyY(c) + quickDy(c)).coerceIn(5, 95)
 
     val QUICK_DEFAULT = listOf(
         ProfileAct(Act.TORCH), ProfileAct(Act.CAMERA), ProfileAct(Act.QR), ProfileAct(Act.MUSIC)

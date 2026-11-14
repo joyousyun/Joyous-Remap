@@ -259,8 +259,8 @@
     <string name="quick_color">Accent color</string>
     <string name="quick_fx">Entry effect</string>
     <string name="quick_size">SIZE: %1$d%%</string>
-    <string name="quick_y">POSITION: %1$d%%</string>
-    <string name="quick_y_follow">↺ FOLLOW THE KEY</string>
+    <string name="quick_y">OFFSET FROM KEY HEIGHT: %1$+d%%</string>
+    <string name="quick_y_follow">↺ ALIGN WITH THE KEY</string>
     <string name="quick_own">Own shortcuts in this profile</string>
     <string name="quick_own_hint">Without this, the general Quick Menu is used.</string>
     <string name="q_camera">Camera</string>
