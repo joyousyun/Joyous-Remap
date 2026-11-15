@@ -308,4 +308,11 @@
     <string name="ma_rewind">Retroceso</string>
     <string name="ma_vol_up">Subir volumen</string>
     <string name="ma_vol_down">Bajar volumen</string>
+
+    <string name="sec_prof_fb">AVISOS EN PANTALLA</string>
+    <string name="prof_notice">Aviso</string>
+    <string name="prof_edge">Borde luminoso</string>
+    <string name="fb_general">General (%1$s)</string>
+    <string name="fb_on">Activado</string>
+    <string name="fb_off">Desactivado</string>
 </resources>

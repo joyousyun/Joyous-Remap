@@ -1364,6 +1364,27 @@ class MainActivity : Activity() {
         }
         c.addView(gs)
 
+        // Aviso y borde en este perfil: como en general, o activados / desactivados solo aquí
+        c.addView(sectionTitle(R.string.sec_prof_fb))
+        val fb = cardBox()
+        fun triText(v: Boolean?, general: Boolean) = when (v) {
+            null -> getString(R.string.fb_general, getString(if (general) R.string.fb_on else R.string.fb_off))
+            true -> getString(R.string.fb_on)
+            false -> getString(R.string.fb_off)
+        }
+        fb.addView(pickerRow(R.string.prof_notice, triText(p.notice, Prefs.chipOn(this))) {
+            pickTri(R.string.prof_notice, p.notice) { v ->
+                Profiles.update(this, p.id) { it.copy(notice = v) }; rebuild()
+            }
+        })
+        fb.addView(divider())
+        fb.addView(pickerRow(R.string.prof_edge, triText(p.edge, Prefs.edge(this))) {
+            pickTri(R.string.prof_edge, p.edge) { v ->
+                Profiles.update(this, p.id) { it.copy(edge = v) }; rebuild()
+            }
+        })
+        c.addView(fb)
+
         // Menú rápido propio del perfil (solo si lo usa alguna pulsación o ya tiene accesos propios)
         val usesQuick = gAll.any { (p.acts[it]?.act ?: Prefs.action(this, it)) == Act.QUICK }
         if (usesQuick || p.quick != null) {
@@ -1424,6 +1445,16 @@ class MainActivity : Activity() {
             })
             box.addView(row)
         }
+    }
+
+    /** Elige entre "como en general", activado o desactivado. */
+    private fun pickTri(title: Int, cur: Boolean?, onSet: (Boolean?) -> Unit) {
+        val opts = listOf<Boolean?>(null, true, false)
+        val labels = arrayOf(getString(R.string.prof_inherit), getString(R.string.fb_on), getString(R.string.fb_off))
+        darkDialog()
+            .setTitle(title)
+            .setSingleChoiceItems(labels, opts.indexOf(cur)) { d, i -> onSet(opts[i]); d.dismiss() }
+            .show()
     }
 
     private fun renameProfile(p: Profile) {

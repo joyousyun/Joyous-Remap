@@ -19,7 +19,10 @@ data class Profile(
     val pkgs: List<String> = emptyList(),
     val acts: Map<Gesture, ProfileAct> = emptyMap(),
     /** Accesos propios del menú rápido; null = usa los generales. */
-    val quick: List<ProfileAct>? = null
+    val quick: List<ProfileAct>? = null,
+    /** Aviso en pantalla y borde luminoso en este perfil; null = como en los ajustes generales. */
+    val notice: Boolean? = null,
+    val edge: Boolean? = null
 ) {
     fun appliesTo(pkg: String): Boolean = if (except) pkg !in pkgs else pkg in pkgs
 }
@@ -34,6 +37,9 @@ class Eff(val excluded: Boolean, val profile: Profile?) {
     }
 
     /** Accesos del menú rápido: los del perfil si los tiene, si no los generales. */
+    fun notice(c: Context): Boolean = profile?.notice ?: Prefs.chipOn(c)
+    fun edge(c: Context): Boolean = profile?.edge ?: Prefs.edge(c)
+
     fun quick(c: Context): List<ProfileAct> = profile?.quick?.takeIf { it.size >= 2 } ?: Prefs.quickItems(c)
 
     companion object {
@@ -168,6 +174,8 @@ object Profiles {
         }
         o.put("acts", a)
         p.quick?.let { o.put("quick", encodeItems(it)) }
+        p.notice?.let { o.put("notice", it) }
+        p.edge?.let { o.put("edge", it) }
         return o
     }
 
@@ -182,6 +190,8 @@ object Profiles {
             val x = a.optJSONObject(g.key) ?: continue
             acts[g] = ProfileAct(Act.from(x.optString("a", "none")), x.optString("p", "").ifEmpty { null })
         }
-        return Profile(id, o.optString("name", ""), o.optBoolean("on", true), o.optBoolean("except", false), pkgs, acts, decodeItems(o.optJSONArray("quick")))
+        return Profile(id, o.optString("name", ""), o.optBoolean("on", true), o.optBoolean("except", false), pkgs, acts, decodeItems(o.optJSONArray("quick")),
+            if (o.has("notice")) o.optBoolean("notice") else null,
+            if (o.has("edge")) o.optBoolean("edge") else null)
     }
 }

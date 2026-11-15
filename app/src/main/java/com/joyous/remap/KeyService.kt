@@ -272,7 +272,7 @@ class KeyService : AccessibilityService() {
 
     private fun flash(res: Int, vararg args: Any) {
         try {
-            overlay.flash(getString(res, *args))
+            overlay.flash(getString(res, *args), showChip = eff.notice(this), showEdge = eff.edge(this))
         } catch (e: Throwable) {
         }
     }
@@ -280,7 +280,7 @@ class KeyService : AccessibilityService() {
     /** Aviso de apagado: la animación del borde va al revés y más rápido. */
     private fun flashOff(res: Int) {
         try {
-            overlay.flash(getString(res), reverse = true)
+            overlay.flash(getString(res), reverse = true, showChip = eff.notice(this), showEdge = eff.edge(this))
         } catch (e: Throwable) {
         }
     }
@@ -330,7 +330,7 @@ class KeyService : AccessibilityService() {
 
     /** Deja que el aviso se dibuje unos fotogramas antes de lanzar la app. */
     private fun startLater(i: Intent) {
-        val delay = if (Prefs.edge(this)) 120L else 0L
+        val delay = if (eff.edge(this)) 120L else 0L
         handler.postDelayed({ startSafe(i) }, delay)
     }
 

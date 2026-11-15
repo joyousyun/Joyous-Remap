@@ -308,4 +308,11 @@
     <string name="ma_rewind">Rewind</string>
     <string name="ma_vol_up">Volume up</string>
     <string name="ma_vol_down">Volume down</string>
+
+    <string name="sec_prof_fb">ON-SCREEN FEEDBACK</string>
+    <string name="prof_notice">Notice</string>
+    <string name="prof_edge">Glowing edge</string>
+    <string name="fb_general">General (%1$s)</string>
+    <string name="fb_on">On</string>
+    <string name="fb_off">Off</string>
 </resources>

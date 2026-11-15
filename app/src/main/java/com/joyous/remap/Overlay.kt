@@ -39,7 +39,10 @@ class Overlay(private val ctx: Context) {
     private var view: FrameLayout? = null
     private var anim: ValueAnimator? = null
 
-    fun flash(label: String, reverse: Boolean = false) {
+    fun flash(
+        label: String, reverse: Boolean = false,
+        showChip: Boolean = Prefs.chipOn(ctx), showEdge: Boolean = Prefs.edge(ctx)
+    ) {
         remove()
         val d = ctx.resources.displayMetrics.density
         val color = Prefs.color(ctx)
@@ -70,8 +73,7 @@ class Overlay(private val ctx: Context) {
             typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
         })
 
-        val showChip = Prefs.chipOn(ctx)
-        if (!showChip && !Prefs.edge(ctx)) return
+        if (!showChip && !showEdge) return
         // El tamaño real lo da la propia ventana (MATCH_PARENT): así sigue la rotación de pantalla.
         val chipTop = Prefs.chipY(ctx) / 100f
         val root = object : FrameLayout(ctx) {
@@ -84,7 +86,7 @@ class Overlay(private val ctx: Context) {
             }
         }
         var edgeView: EdgeView? = null
-        if (Prefs.edge(ctx)) {
+        if (showEdge) {
             edgeView = EdgeView(
                 ctx, Prefs.edgeColor(ctx), Prefs.keyY(ctx) / 100f, Prefs.keyLeft(ctx),
                 Prefs.edgeThick(ctx).toFloat(), Prefs.edgeSoft(ctx).toFloat(),
